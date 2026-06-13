@@ -18,7 +18,7 @@
   --purple:#7c3aed;--purple-dark:#5b21b6;--purple-light:#ede9fe;--purple-mid:#8b5cf6;
   --green:#059669;--red:#dc2626;--blue:#2563eb;--orange:#d97706;--cyan:#0891b2;
   --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
-  --gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155 ;
+  --gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;
   --gray-800:#1e293b;--gray-900:#0f172a;--white:#fff;
   --radius:16px;--radius-sm:10px;--radius-xs:7px;
   --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
@@ -35,8 +35,8 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
 html{scroll-behavior:smooth}
 body{font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100vh;
-  background:#06070d;display:flex;align-items:flex-start;justify-content:center;
-  padding:28px 14px 80px;position:relative;overflow-x:hidden}
+  background:#06070d;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:28px 14px 0;position:relative;overflow-x:hidden}
 #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -343,15 +343,16 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
 .img-text{background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);padding:12px;font-size:13px;line-height:1.7;min-height:120px;white-space:pre-wrap;word-break:break-word}
 .img-text.translated{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
 
-/* PPTX TRANSLATE */
-.pptx-preview{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-.slide-card{border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);padding:12px;background:var(--white)}
-.slide-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.slide-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-400);background:var(--gray-100);padding:3px 8px;border-radius:99px}
-.slide-orig{font-size:13px;color:var(--gray-600);white-space:pre-wrap;margin-bottom:6px;background:var(--gray-50);border-radius:var(--radius-xs);padding:8px}
-.slide-trans{font-size:13px;color:var(--green);white-space:pre-wrap;background:#f0fdf4;border-radius:var(--radius-xs);padding:8px;min-height:32px}
+/* PPTX FIX */
+.pptx-preview{margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:500px;overflow-y:auto}
+.pptx-preview::-webkit-scrollbar{width:4px}
+.pptx-preview::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
+.slide-card{border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);padding:10px 12px;background:var(--white);word-break:break-word}
+.slide-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;flex-wrap:wrap}
+.slide-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-400);background:var(--gray-100);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.slide-orig{font-size:12px;color:var(--gray-600);white-space:pre-wrap;margin-bottom:5px;background:var(--gray-50);border-radius:var(--radius-xs);padding:7px 10px;max-height:80px;overflow-y:auto;word-break:break-word;line-height:1.6}
+.slide-trans{font-size:12px;color:var(--green);white-space:pre-wrap;background:#f0fdf4;border-radius:var(--radius-xs);padding:7px 10px;min-height:28px;word-break:break-word;line-height:1.6}
 .slide-trans.loading{color:var(--gray-400);font-style:italic}
-
 /* COMPARE */
 .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .compare-item{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);overflow:hidden}
@@ -554,7 +555,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
       <button class="tab-btn" onclick="switchTab('text',this)">⌨️ Văn bản</button>
       <button class="tab-btn" onclick="switchTab('image',this)">🖼️ Hình ảnh (beta)</button>
       <button class="tab-btn" onclick="switchTab('pptx',this)">📊 PPTX (beta)</button>
-      <button class="tab-btn" onclick="switchTab('dict',this)">📚 Từ điển</button>
+      
       <button class="tab-btn" onclick="switchTab('history',this)">🕘 Lịch sử</button>
       <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ Cài đặt</button>
     </div>
@@ -603,6 +604,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
         </div>
         <div class="result-body" id="rb1"></div>
         <div class="result-footer">
+          <button class="action-btn" onclick="document.getElementById('rb1').scrollTo({top:0,behavior:'smooth'})">⬆ Đầu trang</button>
           <button class="action-btn" onclick="copyResultText(1)">📋 Sao chép</button>
           <button class="action-btn green" onclick="dlTxt(1)">📝 .txt</button>
           <button class="action-btn green" onclick="dlDocxFile(1)">📘 .docx</button>
@@ -694,29 +696,30 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
     </div>
 
     <!-- TAB: IMAGE -->
-    <div id="panel-image" class="panel">
-      <div style="background:linear-gradient(135deg,#f0f9ff,#ede9fe);border:1.5px solid #bfdbfe;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
-        <h3 style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:5px">🖼️ Dịch từ hình ảnh (OCR + AI)</h3>
-        <p style="font-size:12.5px;color:var(--gray-600)">Upload hình chứa văn bản (ảnh chụp, screenshot, scan). Al claude sẽ dịch (Cần API Key claude). Đang suy nghĩ phát triển thêm al dịch khác </p>
-      </div>
-      <div class="lang-bar" style="margin-bottom:12px">
-        <div><div class="field-label">Từ ngôn ngữ</div>
-          <select id="srcLangImg"><option value="auto">🔍 Tự động nhận diện</option><option value="tiếng Anh">🇬🇧 Tiếng Anh</option><option value="tiếng Việt">🇻🇳 Tiếng Việt</option><option value="tiếng Trung (giản thể)">🇨🇳 Tiếng Trung</option><option value="tiếng Nhật">🇯🇵 Tiếng Nhật</option><option value="tiếng Hàn">🇰🇷 Tiếng Hàn</option><option value="tiếng Pháp">🇫🇷 Tiếng Pháp</option><option value="tiếng Đức">🇩🇪 Tiếng Đức</option></select>
-        </div>
-        <div style="display:flex;align-items:flex-end"><div style="height:42px;width:46px;display:flex;align-items:center;justify-content:center;color:var(--gray-400);font-size:20px">→</div></div>
-        <div><div class="field-label">Sang ngôn ngữ</div>
-          <select id="tgtLangImg"><option value="tiếng Việt">🇻🇳 Tiếng Việt</option><option value="tiếng Anh">🇬🇧 Tiếng Anh</option><option value="tiếng Trung (giản thể)">🇨🇳 Tiếng Trung</option><option value="tiếng Nhật">🇯🇵 Tiếng Nhật</option><option value="tiếng Hàn">🇰🇷 Tiếng Hàn</option><option value="tiếng Pháp">🇫🇷 Tiếng Pháp</option></select>
-        </div>
-      </div>
-      <div class="img-drop-zone" id="imgDropZone" onclick="document.getElementById('imgFileIn').click()">
-        <span style="font-size:38px;display:block;margin-bottom:10px">🖼️</span>
-        <p style="font-size:14px;color:var(--gray-600);margin-bottom:6px">Kéo thả ảnh hoặc <strong style="color:var(--purple-dark)">nhấn để chọn</strong></p>
-        <small style="font-size:11.5px;color:var(--gray-400)">JPG · PNG · WEBP · GIF · BMP (max 5MB)</small>
-      </div>
-      <input type="file" id="imgFileIn" style="display:none" accept="image/*">
-      <div id="imgPreviewWrap" style="display:none;margin-top:12px">
-        <img id="imgPreview" class="img-preview" alt="Preview">
-      </div>
+<div id="panel-image" class="panel">
+  <div style="background:linear-gradient(135deg,#f0f9ff,#ede9fe);border:1.5px solid #bfdbfe;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
+    <h3 style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:5px">🖼️ Dịch từ hình ảnh (OCR + AI)</h3>
+    <p style="font-size:12.5px;color:var(--gray-600)">Upload nhiều ảnh chứa văn bản. Claude API: OCR + dịch chính xác. Free: dùng Tesseract OCR + Google Translate (không cần API key).</p>
+  </div>
+  <div class="lang-bar" style="margin-bottom:12px">
+    <div><div class="field-label">Từ ngôn ngữ</div>
+      <select id="srcLangImg"><option value="auto">🔍 Tự động nhận diện</option><option value="tiếng Anh">🇬🇧 Tiếng Anh</option><option value="tiếng Việt">🇻🇳 Tiếng Việt</option><option value="tiếng Trung (giản thể)">🇨🇳 Tiếng Trung</option><option value="tiếng Nhật">🇯🇵 Tiếng Nhật</option><option value="tiếng Hàn">🇰🇷 Tiếng Hàn</option><option value="tiếng Pháp">🇫🇷 Tiếng Pháp</option><option value="tiếng Đức">🇩🇪 Tiếng Đức</option></select>
+    </div>
+    <div style="display:flex;align-items:flex-end"><div style="height:42px;width:46px;display:flex;align-items:center;justify-content:center;color:var(--gray-400);font-size:20px">→</div></div>
+    <div><div class="field-label">Sang ngôn ngữ</div>
+      <select id="tgtLangImg"><option value="tiếng Việt">🇻🇳 Tiếng Việt</option><option value="tiếng Anh">🇬🇧 Tiếng Anh</option><option value="tiếng Trung (giản thể)">🇨🇳 Tiếng Trung</option><option value="tiếng Nhật">🇯🇵 Tiếng Nhật</option><option value="tiếng Hàn">🇰🇷 Tiếng Hàn</option><option value="tiếng Pháp">🇫🇷 Tiếng Pháp</option></select>
+    </div>
+  </div>
+  <div class="img-drop-zone" id="imgDropZone" onclick="document.getElementById('imgFileIn').click()">
+    <span style="font-size:38px;display:block;margin-bottom:10px">🖼️</span>
+    <p style="font-size:14px;color:var(--gray-600);margin-bottom:6px">Kéo thả <strong>nhiều ảnh</strong> hoặc <strong style="color:var(--purple-dark)">nhấn để chọn</strong></p>
+    <small style="font-size:11.5px;color:var(--gray-400)">JPG · PNG · WEBP · GIF · BMP (max 5MB/ảnh) — hỗ trợ nhiều ảnh cùng lúc</small>
+  </div>
+  <input type="file" id="imgFileIn" style="display:none" accept="image/*" multiple>
+  <div id="imgQueueList" style="margin-top:10px;display:flex;flex-direction:column;gap:8px"></div>
+  <div id="statImg" class="status-wrap"></div>
+  <button class="primary-btn" id="imgTranslateBtn" onclick="doTranslateAllImages()" style="display:none">🔍 OCR & Dịch tất cả ảnh</button>
+</div>
       <div id="statImg" class="status-wrap"></div>
       <div id="imgResultWrap" style="display:none" class="img-result-wrap">
         <div class="img-col">
@@ -762,6 +765,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
       <div id="pptxProgressWrap" style="display:none"><div class="progress-wrap"><div class="progress-bar" id="pptxPb" style="width:0%"></div></div></div>
       <div id="pptxPreview" class="pptx-preview" style="display:none"></div>
       <div id="pptxActions" style="display:none;margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="action-btn" onclick="document.getElementById('pptxPreview').scrollTo({top:0,behavior:'smooth'})">⬆ Lên đầu</button>
         <button class="action-btn green" onclick="downloadPptxTranslated()">📥 Tải PPTX đã dịch</button>
         <button class="action-btn" onclick="copyPptxResult()">📋 Sao chép tất cả</button>
       </div>
@@ -792,34 +796,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
       <button class="primary-btn" onclick="doCompare()">⚡ So sánh ngay</button>
     </div>
 
-    <!-- TAB: DICTIONARY -->
-    <div id="panel-dict" class="panel">
-      <div class="dict-hero">
-        <h3>📚 Từ điển cá nhân thông minh</h3>
-        <p>Bôi đen bất kỳ từ/câu rồi chọn <strong>Lưu từ điển</strong>. Từ được lưu sẽ được <strong>highlight màu</strong> trong kết quả dịch theo mức ưu tiên.</p>
-        <div class="dict-how">
-          <div class="dict-step"><div class="num">1</div> Bôi đen văn bản</div>
-          <div class="dict-step"><div class="num">2</div> Chọn "Lưu từ điển"</div>
-          <div class="dict-step"><div class="num">3</div> Chọn màu ưu tiên</div>
-          <div class="dict-step"><div class="num">4</div> Kết quả tự highlight</div>
-        </div>
-      </div>
-      <div class="priority-legend">
-        <span style="font-size:11px;font-weight:700;color:var(--gray-500);margin-right:4px">Màu ưu tiên:</span>
-        <span class="prio-badge p1">🔴 Cao</span>
-        <span class="prio-badge p2">🟡 Trung bình</span>
-        <span class="prio-badge p3">🟢 Ưu tiên thấp</span>
-        <span class="prio-badge p4">🔵 Tham khảo</span>
-        <span class="prio-badge p0">⚪ Không màu</span>
-      </div>
-      <div class="dict-controls">
-        <input type="text" class="dict-search" id="dictSearch" placeholder="🔍 Tìm trong từ điển..." oninput="renderDict()">
-        <button class="action-btn danger" onclick="clearDict()">🗑️ Xóa tất cả</button>
-        <span style="font-size:12px;color:var(--gray-400);margin-left:auto" id="dictCountLabel"></span>
-      </div>
-      <div id="dictList"></div>
-    </div>
-
+  
     <!-- TAB: HISTORY -->
     <div id="panel-history" class="panel">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
@@ -868,42 +845,59 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
   </div>
 </div>
 
-<!-- TTS MODAL -->
-<div class="tts-modal-overlay" id="ttsModalOverlay" onclick="if(event.target===this)closeTTSModal()">
-  <div class="tts-modal">
-    <h3>🔊 Đọc văn bản</h3>
-    <p>Chọn ngôn ngữ và tốc độ đọc.</p>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-      <div class="tts-opt-row" style="display:flex;align-items:center;gap:10px">
-        <label style="font-size:12px;font-weight:700;color:var(--gray-600);width:100px">Ngôn ngữ</label>
-        <select id="ttsLang" style="flex:1;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:12px;outline:none;cursor:pointer">
-          <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-          <option value="en-US">🇬🇧 English</option>
-          <option value="zh-CN">🇨🇳 中文</option>
-          <option value="ja-JP">🇯🇵 日本語</option>
-          <option value="ko-KR">🇰🇷 한국어</option>
-          <option value="fr-FR">🇫🇷 Français</option>
-        </select>
+
+
+<!-- FOOTER -->
+<footer style="position:relative;z-index:1;width:100%;max-width:1000px;margin-top:0;background:linear-gradient(135deg,#0a0b1a,#060714);border-top:1px solid rgba(255,255,255,.07);padding:36px 48px 28px;">
+  <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px;margin-bottom:28px">
+    <!-- Brand -->
+    <div>
+      <div style="font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="animation:globespin 10s linear infinite;display:inline-block">♥</span>
+        <span style="background:linear-gradient(110deg,#c084fc,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">NIGGEST WEB</span>
       </div>
-      <div class="tts-opt-row" style="display:flex;align-items:center;gap:10px">
-        <label style="font-size:12px;font-weight:700;color:var(--gray-600);width:100px">Tốc độ</label>
-        <select id="ttsRate" style="flex:1;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:12px;outline:none;cursor:pointer">
-          <option value="0.7">Chậm</option>
-          <option value="0.9" selected>Bình thường</option>
-          <option value="1.1">Nhanh</option>
-          <option value="1.4">Rất nhanh</option>
-        </select>
+      <p style="font-size:12.5px;color:rgba(255,255,255,.35);line-height:1.8;margin-bottom:16px">NHĂM NHĂM NHĂM NHĂm</p>
+      <!-- Social -->
+      <div style="display:flex;gap:10px">
+        <a href="https://www.instagram.com/victervent/" target="_blank" title="Instagram" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';this.style.borderColor='transparent'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.12)'">📸</a>
+        <a href="https://www.facebook.com/nguyen.minh.nguyen.116824" target="_blank" title="Facebook" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;transition:all .2s" onmouseover="this.style.background='#1877f2';this.style.borderColor='#1877f2'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.12)'">👥</a>
+        
       </div>
     </div>
-    <div class="tts-modal-btns" id="ttsModalBtns">
-      <button class="tts-cancel-btn" onclick="closeTTSModal()">Hủy</button>
-      <button class="tts-start-btn" onclick="startTTS()">▶ Bắt đầu đọc</button>
+    <!-- Tính năng -->
+    <div>
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.25);margin-bottom:14px">Tính năng</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <a href="#" onclick="switchTab('file',document.querySelectorAll('.tab-btn')[0]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>📄</span> Dịch tệp PDF & DOCX</a>
+        <a href="#" onclick="switchTab('text',document.querySelectorAll('.tab-btn')[1]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>⌨️</span> Dịch văn bản</a>
+        <a href="#" onclick="switchTab('image',document.querySelectorAll('.tab-btn')[2]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>🖼️</span> OCR & Dịch hình ảnh</a>
+        <a href="#" onclick="switchTab('pptx',document.querySelectorAll('.tab-btn')[3]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>📊</span> Dịch PowerPoint</a>
+        <a href="#" onclick="switchTab('history',document.querySelectorAll('.tab-btn')[5]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>🕘</span> Lịch sử dịch</a>
+      </div>
     </div>
-    <div class="tts-progress-bar" id="ttsProgressBar">
-      <div class="tts-progress-fill" id="ttsProgressFill" style="width:0%"></div>
+    <!-- AI hỗ trợ -->
+    <div>
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.25);margin-bottom:14px">AI hỗ trợ</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>✨</span> Claude (Anthropic)</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🤖</span> ChatGPT (OpenAI)</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>💎</span> Gemini (Google)</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🔷</span> DeepSeek</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>⚡</span> Grok (xAI)</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🆓</span> Google Translate (Free)</div>
+      </div>
     </div>
   </div>
-</div>
+  <!-- Bottom bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:10px">
+    <div style="font-size:12px;color:rgba(255,255,255,.2)">© 2026 <strong style="color:rgba(255,255,255,.4)">NIGGEST WEB</strong> BY <a href="https://instagram.com/motkiki" target="_blank" style="color:rgba(124,58,237,.8);text-decoration:none;font-weight:700">@motkiki</a></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)">v1.0</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)">🆓 Free Plan</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3)">🔒 Keys riêng tư</span>
+    </div>
+  </div>
+</footer>
 
 <!-- SELECTION TOOLBAR -->
 <div id="selectionToolbar">
@@ -931,6 +925,373 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
 <div id="dictTooltip"></div>
 
 <div class="toast" id="toast"></div>
+<!-- SCROLL TO TOP BTN -->
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="display:none;position:fixed;bottom:26px;left:26px;z-index:9998;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:99px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,.35);transition:all .3s;letter-spacing:.3px">⬆ Lên đầu</button>
+
+<!-- NAVIGATOR PANEL (trang/slide) -->
+<!-- FAB button -->
+<button id="navFab" onclick="toggleNavPopup()" style="display:none;position:fixed;bottom:80px;left:26px;z-index:9997;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 16px rgba(124,58,237,.35);transition:all .3s;align-items:center;justify-content:center">🧭</button>
+
+<!-- POPUP -->
+<div id="navPanel" style="display:none;position:fixed;bottom:140px;left:26px;z-index:9998;width:300px;background:#fff;border-radius:20px;border:1.5px solid rgba(124,58,237,.2);box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;animation:navPop .2s cubic-bezier(.34,1.56,.64,1)">
+  <style>
+  @keyframes navPop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .nav-tab-btn{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:none;color:#8b5cf6;transition:all .2s}
+  .nav-tab-btn.act{background:#7c3aed;color:#fff}
+  .nav-res-item{padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;color:#5b21b6;background:#f5f3ff;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;margin-bottom:4px}
+  .nav-res-item:hover{background:#ede9fe}
+  .nav-res-num{background:#7c3aed;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;flex-shrink:0}
+  </style>
+  <!-- Header tabs -->
+  <div style="padding:12px 14px 8px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-bottom:1px solid rgba(124,58,237,.1);display:flex;align-items:center;gap:8px">
+    <button class="nav-tab-btn act" id="navTabFile" onclick="switchNavTab('file')">📄 Trang</button>
+    <button class="nav-tab-btn" id="navTabPptx" onclick="switchNavTab('pptx')">📊 Slide</button>
+    <button class="nav-tab-btn" id="navTabImg" onclick="switchNavTab('img')">🖼️ Ảnh</button>
+    <button onclick="closeNavPopup()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:#94a3b8;padding:2px 6px;border-radius:6px">✕</button>
+  </div>
+  <!-- Search -->
+  <div style="padding:10px 12px;border-bottom:1px solid #f1f5f9;display:flex;gap:7px">
+    <input type="text" id="navSearchInput" placeholder="Số trang / từ khoá..." oninput="navSearch()" onkeydown="if(event.key==='Enter')navGo()" style="flex:1;padding:8px 12px;border:1.5px solid #ddd6fe;border-radius:10px;font-size:13px;outline:none;color:#1e293b">
+    <button onclick="navGo()" style="background:#7c3aed;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">Go</button>
+  </div>
+  <!-- Results -->
+  <div id="navSearchResults" style="padding:8px 10px;max-height:220px;overflow-y:auto;min-height:40px"></div>
+  <!-- Footer -->
+  <div style="padding:8px 12px;border-top:1px solid #f1f5f9;display:flex;gap:6px">
+    <button onclick="navScrollTop()" style="flex:1;padding:6px;background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:8px;font-size:11px;font-weight:700;color:#7c3aed;cursor:pointer">⬆ Đầu trang</button>
+    <button onclick="navScrollBottom()" style="flex:1;padding:6px;background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:8px;font-size:11px;font-weight:700;color:#7c3aed;cursor:pointer">⬇ Cuối trang</button>
+  </div>
+</div>
+<script>
+  
+let navOpen=false;
+let navCurrentTab='file';
+
+function toggleNavPopup(){
+  navOpen=!navOpen;
+  document.getElementById('navPanel').style.display=navOpen?'block':'none';
+  if(navOpen){autoSwitchNavTab();document.getElementById('navSearchInput').focus();}
+}
+function closeNavPopup(){
+  navOpen=false;
+  document.getElementById('navPanel').style.display='none';
+}
+function autoSwitchNavTab(){
+  if(document.getElementById('panel-pptx')?.classList.contains('active'))switchNavTab('pptx');
+  else if(document.getElementById('panel-image')?.classList.contains('active'))switchNavTab('img');
+  else switchNavTab('file');
+}
+function switchNavTab(tab){
+  navCurrentTab=tab;
+  ['file','pptx','img'].forEach(t=>{
+    const el=document.getElementById('navTab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(el)el.className='nav-tab-btn'+(t===tab?' act':'');
+  });
+  document.getElementById('navSearchInput').value='';
+  document.getElementById('navSearchResults').innerHTML='';
+}
+
+window.addEventListener('scroll',function(){
+  const btn=document.getElementById('scrollTopBtn');
+  if(btn)btn.style.display=window.scrollY>300?'block':'none';
+  const fab=document.getElementById('navFab');
+  if(!fab)return;
+  const fileActive=document.getElementById('panel-file')?.classList.contains('active');
+  const pptxActive=document.getElementById('panel-pptx')?.classList.contains('active');
+  const imgActive=document.getElementById('panel-image')?.classList.contains('active');
+  const res1=document.getElementById('res1')?.style.display!=='none';
+  const pptxVis=document.getElementById('pptxPreview')?.style.display!=='none';
+  const imgVis=(window.imgQueue||[]).length>0;
+  const show=window.scrollY>200&&((fileActive&&res1)||(pptxActive&&pptxVis)||(imgActive&&imgVis));
+  fab.style.display=show?'flex':'none';
+  if(!show&&navOpen)closeNavPopup();
+});
+
+function navSearch(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  const res=document.getElementById('navSearchResults');
+  res.innerHTML='';
+  if(!q)return;
+  const num=parseInt(q);
+
+  if(navCurrentTab==='pptx'){
+    if(!window.pptxData){res.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px 8px">Chưa có PPTX</div>';return;}
+    let found=0;
+    pptxData.slides.forEach((s,i)=>{
+      const textContent=s.texts.filter(t=>t.trim()).join(' ');
+      if(String(i+1)===q.trim()||textContent.toLowerCase().includes(q.toLowerCase())){
+        if(found++>6)return;
+        const div=document.createElement('div');div.className='nav-res-item';
+        const preview=textContent.slice(0,50)||(s.texts[0]||'');
+        div.innerHTML=`<span class="nav-res-num">Sl.${i+1}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(preview.slice(0,50))}</span>`;
+        div.onclick=()=>{scrollToSlide(i);closeNavPopup();};
+        res.appendChild(div);
+      }
+    });
+    if(!res.children.length)res.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px 8px">Không tìm thấy slide</div>';
+  }
+  else if(navCurrentTab==='img'){
+    const queue=window.imgQueue||[];
+    let found=0;
+    queue.forEach((item,i)=>{
+      if(!isNaN(num)&&(i+1)===num||item.file.name.toLowerCase().includes(q.toLowerCase())||(item.ocr||'').toLowerCase().includes(q.toLowerCase())){
+        if(found++>6)return;
+        const div=document.createElement('div');div.className='nav-res-item';
+        div.innerHTML=`<span class="nav-res-num" style="background:#0891b2">Ảnh ${i+1}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(item.file.name)}</span>`;
+        div.onclick=()=>{
+          const list=document.getElementById('imgQueueList');
+          if(list&&list.children[i]){list.children[i].scrollIntoView({behavior:'smooth',block:'center'});list.children[i].style.outline='2px solid #0891b2';setTimeout(()=>list.children[i].style.outline='',1500);}
+          closeNavPopup();
+        };
+        res.appendChild(div);
+      }
+    });
+    if(!res.children.length)res.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px 8px">Không tìm thấy ảnh</div>';
+  }
+  else{
+    // File/page
+    const rb=document.getElementById('rb1');
+    if(!rb){res.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px 8px">Chưa có kết quả dịch</div>';return;}
+    const breaks=rb.querySelectorAll('.result-page-break');
+    let found=0;
+    breaks.forEach((el,i)=>{
+      if(!isNaN(num)&&(i+1)===num||el.textContent.toLowerCase().includes(q.toLowerCase())){
+        if(found++>8)return;
+        const div=document.createElement('div');div.className='nav-res-item';
+        div.innerHTML=`<span class="nav-res-num">Tr.${i+2}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(el.textContent.trim().slice(0,50))}</span>`;
+        div.onclick=()=>{el.scrollIntoView({behavior:'smooth',block:'center'});closeNavPopup();};
+        res.appendChild(div);
+      }
+    });
+    if(!isNaN(num)&&num===1){
+      const div=document.createElement('div');div.className='nav-res-item';
+      div.innerHTML=`<span class="nav-res-num">Tr.1</span><span>Đầu trang</span>`;
+      div.onclick=()=>{rb.scrollTo({top:0,behavior:'smooth'});closeNavPopup();};
+      res.prepend(div);
+    }
+    if(!res.children.length)res.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px 8px">Không tìm thấy trang</div>';
+  }
+}
+
+function navGo(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  if(!q)return;
+  const num=parseInt(q);
+  if(navCurrentTab==='pptx'){if(!isNaN(num))scrollToSlide(num-1);}
+  else if(navCurrentTab==='img'){
+    const list=document.getElementById('imgQueueList');
+    if(list&&!isNaN(num)&&list.children[num-1])list.children[num-1].scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  else{if(!isNaN(num))navGoToPage(num);}
+  closeNavPopup();
+}
+function navScrollTop(){
+  const tab=navCurrentTab;
+  if(tab==='pptx'){document.getElementById('pptxPreview')?.scrollTo({top:0,behavior:'smooth'});}
+  else if(tab==='img'){document.getElementById('imgQueueList')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  else{document.getElementById('rb1')?.scrollTo({top:0,behavior:'smooth'});}
+  closeNavPopup();
+}
+function navScrollBottom(){
+  const tab=navCurrentTab;
+  if(tab==='pptx'){const p=document.getElementById('pptxPreview');if(p)p.scrollTo({top:p.scrollHeight,behavior:'smooth'});}
+  else if(tab==='img'){const l=document.getElementById('imgQueueList');if(l)l.lastElementChild?.scrollIntoView({behavior:'smooth',block:'end'});}
+  else{const r=document.getElementById('rb1');if(r)r.scrollTo({top:r.scrollHeight,behavior:'smooth'});}
+  closeNavPopup();
+}
+function scrollToSlide(i){
+  const el=document.getElementById('slide-card-'+i);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #7c3aed';setTimeout(()=>el.style.outline='',1500);}
+}
+function navGoToPage(num){
+  const rb=document.getElementById('rb1');if(!rb)return;
+  if(num===1){rb.scrollTo({top:0,behavior:'smooth'});return;}
+  const breaks=rb.querySelectorAll('.result-page-break');
+  const target=breaks[num-2];
+  if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// Close popup when clicking outside
+document.addEventListener('click',function(e){
+  if(navOpen&&!document.getElementById('navPanel').contains(e.target)&&!document.getElementById('navFab').contains(e.target))closeNavPopup();
+});
+
+function navSearch(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  const res=document.getElementById('navSearchResults');
+  res.innerHTML='';
+  if(!q)return;
+
+  const pptxActive=document.getElementById('panel-pptx')?.classList.contains('active');
+  const imgActive=document.getElementById('panel-image')?.classList.contains('active');
+  const num=parseInt(q);
+
+  if(pptxActive){
+    if(!window.pptxData)return;
+    pptxData.slides.forEach((s,i)=>{
+      const slideNum=i+1;
+      const textContent=s.texts.filter(t=>t.trim()).join(' ').toLowerCase();
+      const numMatch=String(slideNum)===q.trim();
+      const textMatch=textContent.includes(q.toLowerCase());
+      if(numMatch||textMatch){
+        const div=document.createElement('div');
+        div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600;margin-bottom:3px';
+        const preview=s.texts.filter(t=>t.trim()).join(' ').slice(0,40);
+        div.textContent=`Slide ${slideNum}: ${preview}...`;
+        div.onclick=()=>scrollToSlide(i);
+        res.appendChild(div);
+      }
+    });
+  } else if(imgActive){
+    // Search ảnh theo tên
+    const queue=window.imgQueue||[];
+    queue.forEach((item,i)=>{
+      const nameMatch=item.file.name.toLowerCase().includes(q.toLowerCase());
+      const numMatch=!isNaN(num)&&(i+1)===num;
+      const ocrMatch=item.ocr&&item.ocr.toLowerCase().includes(q.toLowerCase());
+      if(nameMatch||numMatch||ocrMatch){
+        const div=document.createElement('div');
+        div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600;margin-bottom:3px';
+        div.textContent=`Ảnh ${i+1}: ${item.file.name}`;
+        div.onclick=()=>{
+          const list=document.getElementById('imgQueueList');
+          if(list&&list.children[i])list.children[i].scrollIntoView({behavior:'smooth',block:'center'});
+        };
+        res.appendChild(div);
+      }
+    });
+  } else {
+    // File/page search
+    const rb=document.getElementById('rb1');
+    if(!rb)return;
+    const breaks=rb.querySelectorAll('.result-page-break');
+    breaks.forEach((el,i)=>{
+      const pageNum=i+1;
+      const numMatch=!isNaN(num)&&pageNum===num;
+      const textMatch=el.textContent.toLowerCase().includes(q.toLowerCase());
+      if(numMatch||textMatch){
+        const div=document.createElement('div');
+        div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600;margin-bottom:3px';
+        div.textContent=`Trang ${pageNum}`;
+        div.onclick=()=>el.scrollIntoView({behavior:'smooth',block:'center'});
+        res.appendChild(div);
+      }
+    });
+    if(!isNaN(num)&&!res.children.length){
+      const div=document.createElement('div');
+      div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600';
+      div.textContent=`Đến trang ${num}`;
+      div.onclick=()=>navGoToPage(num);
+      res.appendChild(div);
+    }
+  }
+
+  if(!res.children.length)res.innerHTML='<span style="color:#94a3b8">Không tìm thấy</span>';
+}
+
+function navGo(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  if(!q)return;
+  const num=parseInt(q);
+  const pptxActive=document.getElementById('panel-pptx')?.classList.contains('active');
+  const imgActive=document.getElementById('panel-image')?.classList.contains('active');
+  if(pptxActive){if(!isNaN(num))scrollToSlide(num-1);}
+  else if(imgActive){
+    const list=document.getElementById('imgQueueList');
+    if(list&&!isNaN(num)&&list.children[num-1])list.children[num-1].scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  else{if(!isNaN(num))navGoToPage(num);}
+}
+
+function scrollToSlide(i){
+  const el=document.getElementById('slide-card-'+i);
+  if(el){
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.style.outline='2px solid #7c3aed';
+    setTimeout(()=>el.style.outline='',1500);
+  }
+}
+
+function navGoToPage(num){
+  const rb=document.getElementById('rb1');
+  if(!rb)return;
+  if(num===1){rb.scrollTo({top:0,behavior:'smooth'});return;}
+  const breaks=rb.querySelectorAll('.result-page-break');
+  const target=breaks[num-2];
+  if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function navSearch(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  const res=document.getElementById('navSearchResults');
+  const pptxActive=document.getElementById('panel-pptx')&&document.getElementById('panel-pptx').classList.contains('active');
+  res.innerHTML='';
+  if(!q)return;
+  if(pptxActive){
+    // Search slides
+    if(!window.pptxData)return;
+    pptxData.slides.forEach((s,i)=>{
+      const num=i+1;
+      const textMatch=s.texts.join(' ').toLowerCase().includes(q.toLowerCase());
+      const numMatch=String(num)===q.trim();
+      if(numMatch||textMatch){
+        const div=document.createElement('div');
+        div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600';
+        div.textContent=`Slide ${num}: ${s.texts.filter(t=>t.trim()).join(' ').slice(0,50)}...`;
+        div.onclick=()=>scrollToSlide(i);
+        res.appendChild(div);
+      }
+    });
+    if(!res.children.length)res.innerHTML='<span style="color:#94a3b8">Không tìm thấy</span>';
+  } else {
+    // Search pages in file result
+    const rb=document.getElementById('rb1');if(!rb)return;
+    const breaks=rb.querySelectorAll('.result-page-break');
+    const numQ=parseInt(q);
+    breaks.forEach((el,i)=>{
+      const numMatch=!isNaN(numQ)&&(i+1)===numQ;
+      const textMatch=el.textContent.toLowerCase().includes(q.toLowerCase());
+      if(numMatch||textMatch){
+        const div=document.createElement('div');
+        div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600';
+        div.textContent=`Trang ${i+1}`;
+        div.onclick=()=>{el.scrollIntoView({behavior:'smooth',block:'center'});};
+        res.appendChild(div);
+      }
+    });
+    // Also check page number direct input
+    if(!isNaN(numQ)&&!res.children.length){
+      const div=document.createElement('div');
+      div.style.cssText='padding:5px 8px;background:#f5f3ff;border-radius:6px;cursor:pointer;font-size:12px;color:#5b21b6;font-weight:600';
+      div.textContent=`Đến trang ${numQ}`;
+      div.onclick=()=>navGoToPage(numQ);
+      res.appendChild(div);
+    }
+    if(!res.children.length)res.innerHTML='<span style="color:#94a3b8">Không tìm thấy</span>';
+  }
+}
+
+function navGo(){
+  const q=document.getElementById('navSearchInput').value.trim();
+  if(!q)return;
+  const num=parseInt(q);
+  const pptxActive=document.getElementById('panel-pptx')&&document.getElementById('panel-pptx').classList.contains('active');
+  if(pptxActive){if(!isNaN(num))scrollToSlide(num-1);}
+  else{if(!isNaN(num))navGoToPage(num);}
+}
+
+function scrollToSlide(i){
+  const el=document.getElementById('slide-card-'+i);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #7c3aed';setTimeout(()=>el.style.outline='',1500);}
+}
+
+function navGoToPage(num){
+  const rb=document.getElementById('rb1');if(!rb)return;
+  const breaks=rb.querySelectorAll('.result-page-break');
+  const target=breaks[num-2]; // page break before page num
+  if(num===1){rb.scrollTo({top:0,behavior:'smooth'});}
+  else if(target){target.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+</script>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1061,19 +1422,64 @@ function saveSelectedToDict(){
   const entry={id:Date.now(),src:_selText,tgt:'',srcLang:src,tgtLang:tgt,ts:new Date().toLocaleString('vi-VN'),priority:0};
   dictEntries.unshift(entry);
   saveDict();
-  toast('📚 Đã thêm vào từ điển, đang dịch...','info');
+
+  // Hiện mini popup xác nhận
+  showDictSavePopup(_selText);
+
   (async()=>{
     try{
       let translated='';
       if(currentProvider==='free')translated=await callFree(_selText,src,tgt);
       else translated=await callAI(_selText,src,tgt,'tự nhiên',null);
-      entry.tgt=translated.trim();saveDict();
+      entry.tgt=translated.trim();
+      saveDict();
+      updateDictSavePopup(translated.trim());
       if(document.getElementById('panel-dict').classList.contains('active'))renderDict();
-    }catch(e){entry.tgt='(chưa dịch)';saveDict();}
+    }catch(e){entry.tgt='(chưa dịch)';saveDict();updateDictSavePopup('(chưa dịch)');}
   })();
-  if(document.getElementById('panel-dict').classList.contains('active'))renderDict();
 }
-
+let _dictPopupTimer=null;
+function showDictSavePopup(word){
+  let popup=document.getElementById('dictSavePopup');
+  if(!popup){
+    popup=document.createElement('div');
+    popup.id='dictSavePopup';
+    popup.style.cssText='position:fixed;z-index:600;background:#1e293b;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.3);max-width:280px;animation:fadeIn .2s ease;border-left:3px solid #a78bfa';
+    document.body.appendChild(popup);
+  }
+  const sel=window.getSelection();
+  let top=200,left=200;
+  if(sel&&sel.rangeCount>0){const r=sel.getRangeAt(0).getBoundingClientRect();top=r.bottom+window.scrollY+8;left=Math.max(8,r.left+window.scrollX);}
+  popup.style.top=top+'px';popup.style.left=left+'px';popup.style.display='block';
+  popup.innerHTML=`<div style="font-size:11px;color:#a78bfa;font-weight:700;margin-bottom:4px">📚 Đã lưu từ điển</div>
+    <div style="color:#e2e8f0;margin-bottom:6px">${escHtml(word.slice(0,50))}</div>
+    <div style="color:#94a3b8;font-size:11px" id="dictPopupTrans">⏳ Đang dịch...</div>
+    <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap">
+      <button onclick="setDictPopupPrio(1)" style="padding:3px 8px;border:1.5px solid #fecaca;background:#fef2f2;color:#dc2626;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer">🔴</button>
+      <button onclick="setDictPopupPrio(2)" style="padding:3px 8px;border:1.5px solid #fde68a;background:#fffbeb;color:#d97706;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer">🟡</button>
+      <button onclick="setDictPopupPrio(3)" style="padding:3px 8px;border:1.5px solid #bbf7d0;background:#f0fdf4;color:#059669;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer">🟢</button>
+      <button onclick="setDictPopupPrio(4)" style="padding:3px 8px;border:1.5px solid #bfdbfe;background:#eff6ff;color:#2563eb;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer">🔵</button>
+      <button onclick="closeDictSavePopup()" style="padding:3px 8px;border:1.5px solid #e2e8f0;background:rgba(255,255,255,.1);color:#94a3b8;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer">✕</button>
+    </div>`;
+  clearTimeout(_dictPopupTimer);
+  _dictPopupTimer=setTimeout(closeDictSavePopup,5000);
+}
+function updateDictSavePopup(trans){
+  const el=document.getElementById('dictPopupTrans');
+  if(el)el.textContent='→ '+trans.slice(0,60);
+}
+function closeDictSavePopup(){
+  const p=document.getElementById('dictSavePopup');
+  if(p)p.style.display='none';
+  clearTimeout(_dictPopupTimer);
+}
+function setDictPopupPrio(prio){
+  if(dictEntries[0])dictEntries[0].priority=prio;
+  saveDict();
+  if(document.getElementById('panel-dict').classList.contains('active'))renderDict();
+  closeDictSavePopup();
+  toast('✅ Đã set ưu tiên '+['','🔴','🟡','🟢','🔵'][prio],'success');
+}
 async function translateSelectedQuick(){
   if(!_selText)return;
   hideSelectionToolbar();
@@ -1377,101 +1783,176 @@ function stopTTS(){
 }
 
 /* ══ IMAGE TRANSLATE ══ */
+/* ══ IMAGE TRANSLATE ══ */
+let imgQueue=[]; // [{file, base64, mime, status, ocr, translated}]
+
 const imgDropZone=document.getElementById('imgDropZone');
 imgDropZone.addEventListener('dragover',e=>{e.preventDefault();imgDropZone.classList.add('over')});
 imgDropZone.addEventListener('dragleave',()=>imgDropZone.classList.remove('over'));
-imgDropZone.addEventListener('drop',e=>{e.preventDefault();imgDropZone.classList.remove('over');if(e.dataTransfer.files[0])handleImageFile(e.dataTransfer.files[0]);});
-document.getElementById('imgFileIn').addEventListener('change',e=>{if(e.target.files[0])handleImageFile(e.target.files[0]);});
+imgDropZone.addEventListener('drop',e=>{e.preventDefault();imgDropZone.classList.remove('over');if(e.dataTransfer.files.length)handleImageFiles(e.dataTransfer.files);});
+document.getElementById('imgFileIn').addEventListener('change',e=>{if(e.target.files.length)handleImageFiles(e.target.files);});
 
-function handleImageFile(file){
-  if(!file.type.startsWith('image/')){toast('Chỉ hỗ trợ file ảnh!','error');return;}
-  if(file.size>5*1024*1024){toast('Ảnh quá lớn (max 5MB)','error');return;}
-  imgMime=file.type;
-  const reader=new FileReader();
-  reader.onload=(ev)=>{
-    imgBase64=ev.target.result.split(',')[1];
-    const wrap=document.getElementById('imgPreviewWrap');
-    const img=document.getElementById('imgPreview');
-    img.src=ev.target.result;
-    wrap.style.display='block';
-    document.getElementById('imgTranslateBtn').style.display='flex';
-    document.getElementById('imgResultWrap').style.display='none';
-    document.getElementById('imgActionWrap').style.display='none';
-  };
-  reader.readAsDataURL(file);
+function handleImageFiles(fileList){
+  const valid=[...fileList].filter(f=>f.type.startsWith('image/')&&f.size<=5*1024*1024);
+  const tooLarge=[...fileList].filter(f=>f.size>5*1024*1024);
+  if(tooLarge.length)toast(`⚠️ ${tooLarge.length} ảnh quá 5MB bị bỏ qua`,'warning');
+  if(!valid.length)return;
+  const promises=valid.map(file=>new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      imgQueue.push({file,base64:ev.target.result.split(',')[1],mime:file.type,status:'pending',ocr:'',translated:''});
+      resolve();
+    };
+    reader.readAsDataURL(file);
+  }));
+  Promise.all(promises).then(()=>{renderImgQueue();document.getElementById('imgTranslateBtn').style.display='flex';});
 }
 
-async function doTranslateImage(){
-  if(!imgBase64){toast('Chưa chọn ảnh','error');return;}
-  const key=getKey('claude');
-  if(!key){toast('Cần API key Claude để dịch ảnh (OCR)','error');return;}
+function renderImgQueue(){
+  const el=document.getElementById('imgQueueList');
+  if(!imgQueue.length){el.innerHTML='';return;}
+  el.innerHTML=imgQueue.map((item,i)=>{
+    const statusIcon=item.status==='done'?'✅':item.status==='error'?'❌':item.status==='processing'?'⏳':'🕐';
+    const statusColor=item.status==='done'?'#166534':item.status==='error'?'#991b1b':item.status==='processing'?'#1d4ed8':'#64748b';
+    return`<div style="border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);overflow:hidden;background:#fff">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)">
+        <img src="data:${item.mime};base64,${item.base64}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--gray-200)">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--gray-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.file.name}</div>
+          <div style="font-size:11px;color:var(--gray-400)">${(item.file.size/1024).toFixed(1)} KB</div>
+        </div>
+        <span style="font-size:12px;font-weight:700;color:${statusColor}">${statusIcon} ${item.status==='done'?'Xong':item.status==='error'?'Lỗi':item.status==='processing'?'Đang dịch...':'Chờ'}</span>
+        <button onclick="removeImgItem(${i})" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--gray-300);padding:4px" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='var(--gray-300)'">✕</button>
+      </div>
+      ${item.status==='done'?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:10px 12px;border-right:1px solid var(--gray-100)">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:5px">📄 Văn bản gốc (OCR)</div>
+          <div style="font-size:12px;line-height:1.7;color:var(--gray-800);white-space:pre-wrap;max-height:120px;overflow-y:auto">${escHtml(item.ocr||'(Không đọc được)')}</div>
+        </div>
+        <div style="padding:10px 12px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#166534;margin-bottom:5px">✅ Bản dịch</div>
+          <div style="font-size:12px;line-height:1.7;color:#166534;white-space:pre-wrap;max-height:120px;overflow-y:auto">${escHtml(item.translated||'(Không dịch được)')}</div>
+        </div>
+      </div>
+      <div style="padding:8px 12px;display:flex;gap:6px;border-top:1px solid var(--gray-100)">
+        <button class="action-btn" onclick="copyImgItemText(${i},'ocr')" style="font-size:11px;padding:5px 10px">📋 Copy OCR</button>
+        <button class="action-btn green" onclick="copyImgItemText(${i},'trans')" style="font-size:11px;padding:5px 10px">📋 Copy dịch</button>
+        <button class="action-btn" onclick="loadImgItemIntoText(${i})" style="font-size:11px;padding:5px 10px">✏️ Sửa trong ô dịch</button>
+      </div>`:''}
+      ${item.status==='error'?`<div style="padding:10px 12px;font-size:12px;color:#991b1b">❌ ${escHtml(item.ocr||'Lỗi không xác định')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function removeImgItem(i){imgQueue.splice(i,1);renderImgQueue();if(!imgQueue.length)document.getElementById('imgTranslateBtn').style.display='none';}
+function copyImgItemText(i,type){const item=imgQueue[i];navigator.clipboard.writeText(type==='ocr'?item.ocr:item.translated).then(()=>toast('✅ Đã sao chép!','success'));}
+function loadImgItemIntoText(i){const item=imgQueue[i];document.getElementById('textIn').value=item.ocr;updateCC();switchTab('text',document.querySelectorAll('.tab-btn')[1]);toast('✏️ Đã tải vào ô dịch','info');}
+
+// Tesseract-based free OCR
+async function ocrWithTesseract(base64,mime,srcLang){
+  return new Promise((resolve,reject)=>{
+    // Load Tesseract if not loaded
+    if(!window.Tesseract){
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js';
+      s.onload=()=>doOcr();
+      s.onerror=()=>reject(new Error('Không tải được Tesseract'));
+      document.head.appendChild(s);
+    } else doOcr();
+
+    function doOcr(){
+      const langMap={'tiếng Việt':'vie','tiếng Anh':'eng','tiếng Trung (giản thể)':'chi_sim','tiếng Nhật':'jpn','tiếng Hàn':'kor','tiếng Pháp':'fra','tiếng Đức':'deu','auto':'eng+vie'};
+      const tessLang=langMap[srcLang]||'eng';
+      const imgSrc=`data:${mime};base64,${base64}`;
+      Tesseract.recognize(imgSrc,tessLang,{logger:()=>{}})
+        .then(({data:{text}})=>resolve(text.trim()))
+        .catch(reject);
+    }
+  });
+}
+
+async function doTranslateAllImages(){
+  if(!imgQueue.length)return;
   const src=document.getElementById('srcLangImg').value;
   const tgt=document.getElementById('tgtLangImg').value;
-  setStatus('statImg','🔍 Đang OCR và dịch ảnh...','info');
+  const useClaude=currentProvider==='claude'&&getKey('claude');
+  const useOpenAI=currentProvider==='openai'&&getKey('openai');
+  const useGemini=currentProvider==='gemini'&&getKey('gemini');
+  const canUseVisionAI=useClaude||useOpenAI||useGemini;
+
   document.getElementById('imgTranslateBtn').disabled=true;
-  document.getElementById('imgResultWrap').style.display='none';
-  document.getElementById('imgActionWrap').style.display='none';
+  setStatus('statImg',`🔍 Đang xử lý ${imgQueue.length} ảnh...`,'info');
 
-  try{
-    const langNote=src==='auto'?'Hãy tự nhận diện ngôn ngữ trong ảnh':'Ngôn ngữ gốc: '+src;
-    const prompt=`Bạn là chuyên gia OCR và dịch thuật. Thực hiện 2 bước:
+  for(let i=0;i<imgQueue.length;i++){
+    const item=imgQueue[i];
+    if(item.status==='done')continue;
+    item.status='processing';
+    renderImgQueue();
+    setStatus('statImg',`🔍 [${i+1}/${imgQueue.length}] Đang xử lý: ${item.file.name}...`,'info');
 
-1. OCR: Đọc và trích xuất TOÀN BỘ văn bản từ ảnh này. ${langNote}.
-2. DỊCH: Dịch toàn bộ văn bản đó sang ${tgt}.
-
-Trả lời theo đúng format JSON sau (không thêm gì khác):
-{"ocr":"<toàn bộ văn bản gốc>","translation":"<bản dịch hoàn chỉnh>"}`;
-
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:document.getElementById('modelSelect').value||'claude-sonnet-4-6',
-        max_tokens:4096,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:imgMime,data:imgBase64}},
-          {type:'text',text:prompt}
-        ]}]
-      })
-    });
-
-    if(!res.ok){const d=await res.json();throw new Error(d.error?.message||'Lỗi '+res.status);}
-    const data=await res.json();
-    const raw=data.content?.[0]?.text||'{}';
-    let parsed={ocr:'(Không đọc được văn bản)',translation:'(Không dịch được)'};
     try{
-      const clean=raw.replace(/```json|```/g,'').trim();
-      parsed=JSON.parse(clean);
+      if(canUseVisionAI){
+        // Use AI vision API
+        const langNote=src==='auto'?'Hãy tự nhận diện ngôn ngữ trong ảnh':'Ngôn ngữ gốc: '+src;
+        const prompt=`Bạn là chuyên gia OCR và dịch thuật. Thực hiện 2 bước:\n1. OCR: Đọc và trích xuất TOÀN BỘ văn bản từ ảnh này. ${langNote}.\n2. DỊCH: Dịch toàn bộ văn bản đó sang ${tgt}.\nTrả lời theo đúng format JSON (không thêm gì khác):\n{"ocr":"<văn bản gốc>","translation":"<bản dịch>"}`;
+
+        let raw='';
+        if(useClaude){
+          const key=getKey('claude');
+          const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:document.getElementById('modelSelect').value||'claude-sonnet-4-6',max_tokens:4096,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:item.mime,data:item.base64}},{type:'text',text:prompt}]}]})});
+          if(!res.ok){const d=await res.json();throw new Error(d.error?.message||'Claude error');}
+          const data=await res.json();raw=data.content?.[0]?.text||'{}';
+        } else if(useOpenAI){
+          const key=getKey('openai');
+          const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o',max_tokens:4096,messages:[{role:'user',content:[{type:'image_url',image_url:{url:`data:${item.mime};base64,${item.base64}`}},{type:'text',text:prompt}]}]})});
+          if(!res.ok){const d=await res.json();throw new Error(d.error?.message||'OpenAI error');}
+          const data=await res.json();raw=data.choices?.[0]?.message?.content||'{}';
+        } else if(useGemini){
+          const key=getKey('gemini');
+          const model=document.getElementById('modelSelect').value||'gemini-1.5-flash';
+          const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:item.mime,data:item.base64}},{text:prompt}]}],generationConfig:{maxOutputTokens:4096}})});
+          if(!res.ok){const d=await res.json();throw new Error(d.error?.message||'Gemini error');}
+          const data=await res.json();raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'{}';
+        }
+
+        let parsed={ocr:'',translation:''};
+        try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}
+        catch(e){const om=raw.match(/"ocr"\s*:\s*"([\s\S]*?)(?:",|\"\s*})/);const tm=raw.match(/"translation"\s*:\s*"([\s\S]*?)"\s*}/);if(om)parsed.ocr=om[1].replace(/\\n/g,'\n');if(tm)parsed.translation=tm[1].replace(/\\n/g,'\n');}
+        item.ocr=parsed.ocr||'(Không đọc được)';
+        item.translated=parsed.translation||'(Không dịch được)';
+      } else {
+        // Free: Tesseract OCR + Google Translate
+        setStatus('statImg',`🔍 [${i+1}/${imgQueue.length}] OCR miễn phí: ${item.file.name}...`,'info');
+        const ocrText=await ocrWithTesseract(item.base64,item.mime,src);
+        item.ocr=ocrText||'(Không đọc được văn bản)';
+        if(ocrText&&ocrText.trim()){
+          setStatus('statImg',`🌐 [${i+1}/${imgQueue.length}] Đang dịch: ${item.file.name}...`,'info');
+          const translated=await callFree(ocrText,src,tgt);
+          item.translated=translated||'(Không dịch được)';
+        } else {
+          item.translated='(Không có văn bản để dịch)';
+        }
+      }
+      item.status='done';
     }catch(e){
-      // Fallback: extract manually
-      const ocrMatch=raw.match(/"ocr"\s*:\s*"([\s\S]*?)(?:","|"\s*})/);
-      const transMatch=raw.match(/"translation"\s*:\s*"([\s\S]*?)"\s*}/);
-      if(ocrMatch)parsed.ocr=ocrMatch[1].replace(/\\n/g,'\n');
-      if(transMatch)parsed.translation=transMatch[1].replace(/\\n/g,'\n');
+      item.status='error';
+      item.ocr='Lỗi: '+e.message;
+      item.translated='';
     }
-    document.getElementById('imgOcrText').textContent=parsed.ocr||'(Không đọc được)';
-    document.getElementById('imgTranslated').textContent=parsed.translation||'(Không dịch được)';
-    document.getElementById('imgResultWrap').style.display='grid';
-    document.getElementById('imgActionWrap').style.display='flex';
-    setStatus('statImg','✅ Hoàn thành!','success');
-    setTimeout(()=>setStatus('statImg','',''),2500);
-  }catch(e){
-    setStatus('statImg','❌ Lỗi: '+e.message,'error');
-  }finally{
-    document.getElementById('imgTranslateBtn').disabled=false;
+    renderImgQueue();
+    if(i<imgQueue.length-1)await delay(500);
   }
+
+  const doneCount=imgQueue.filter(i=>i.status==='done').length;
+  const errCount=imgQueue.filter(i=>i.status==='error').length;
+  setStatus('statImg',`✅ Xong: ${doneCount} ảnh thành công${errCount?' · '+errCount+' lỗi':''}`,doneCount>0?'success':'error');
+  setTimeout(()=>setStatus('statImg','',''),3000);
+  document.getElementById('imgTranslateBtn').disabled=false;
 }
 
-function copyImgResult(type){
-  const text=type==='ocr'?document.getElementById('imgOcrText').textContent:document.getElementById('imgTranslated').textContent;
-  navigator.clipboard.writeText(text).then(()=>toast('✅ Đã sao chép!','success'));
-}
-function loadImgIntoText(){
-  const text=document.getElementById('imgOcrText').textContent;
-  document.getElementById('textIn').value=text;updateCC();
-  switchTab('text',document.querySelectorAll('.tab-btn')[1]);
-  toast('✏️ Đã tải vào ô dịch','info');
-}
+// Legacy compat
+function loadImgIntoText(){if(imgQueue.length)loadImgItemIntoText(0);}
+function copyImgResult(type){if(imgQueue.length)copyImgItemText(0,type);}
 
 /* ══ PPTX TRANSLATE ══ */
 const pptxDrop=document.getElementById('pptxDropZone');
@@ -1480,6 +1961,37 @@ pptxDrop.addEventListener('dragleave',()=>pptxDrop.classList.remove('over'));
 pptxDrop.addEventListener('drop',e=>{e.preventDefault();pptxDrop.classList.remove('over');if(e.dataTransfer.files[0])handlePptxFile(e.dataTransfer.files[0]);});
 document.getElementById('pptxFileIn').addEventListener('change',e=>{if(e.target.files[0])handlePptxFile(e.target.files[0]);});
 
+function renderPptxPreview(){
+  const wrap=document.getElementById('pptxPreview');
+  if(!pptxData){wrap.style.display='none';return;}
+  wrap.style.display='flex';
+  wrap.innerHTML=pptxData.slides.map((s,i)=>{
+    const nonEmpty=s.texts.filter(t=>t.trim());
+    const orig=nonEmpty.join('\n');
+    const transArr=s.translated||[];
+    const transNonEmpty=transArr.filter(t=>t&&t.trim());
+    const trans=transNonEmpty.join('\n');
+    const slideThumb=`<div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:6px;width:32px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:800">${i+1}</div>`;
+    return`<div class="slide-card" id="slide-card-${i}">
+      <div class="slide-card-head">
+        ${slideThumb}
+        <span class="slide-num">Slide ${i+1}</span>
+        <span style="font-size:11px;color:var(--gray-400)">${nonEmpty.length} đoạn có chữ</span>
+        ${trans?'<span style="font-size:10px;font-weight:700;color:#059669;background:#f0fdf4;padding:2px 8px;border-radius:99px">✅ Đã dịch</span>':''}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px">GỐC</div>
+          <div class="slide-orig">${escHtml(orig)}</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#059669;margin-bottom:4px">DỊCH</div>
+          <div class="slide-trans ${trans?'':'loading'}" id="slide-trans-${i}">${escHtml(trans)||'Chưa dịch...'}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
 async function handlePptxFile(file){
   if(!/\.pptx$/i.test(file.name)){toast('Chỉ hỗ trợ .pptx!','error');return;}
   setStatus('statPptx','📂 Đang đọc file PPTX...','info');
@@ -1498,7 +2010,14 @@ async function handlePptxFile(file){
     for(let i=0;i<slideFiles.length;i++){
       const content=await zip.files[slideFiles[i]].async('string');
       const texts=extractPptxTexts(content);
-      pptxData.slides.push({index:i,path:slideFiles[i],texts,content,translated:[]});
+      pptxData.slides.push({
+      index:i,
+      path:slideFiles[i],
+      paragraphs:texts, // [{paraText,hasRuns,fullXml}]
+      texts:texts.map(p=>p.paraText), // backward compat
+      content,
+      translated:[]
+    });
     }
 
     renderPptxPreview();
@@ -1511,125 +2030,178 @@ async function handlePptxFile(file){
 }
 
 function extractPptxTexts(xmlStr){
-  // Extract all <a:t> text nodes
-  const re=/<a:t[^>]*>([\s\S]*?)<\/a:t>/g;
-  const texts=[];
-  let m;
-  while((m=re.exec(xmlStr))!==null){
-    const t=m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
-    if(t)texts.push(t);
+  // Trả về mảng: [{paraText, runCount, originalXml}] để rebuild chính xác
+  const paragraphs=[];
+  let idx=0;
+  while(idx<xmlStr.length){
+    const start=xmlStr.indexOf('<a:p>',idx);
+    const startAlt=xmlStr.indexOf('<a:p ',idx);
+    let pStart=-1;
+    if(start===-1&&startAlt===-1)break;
+    else if(start===-1)pStart=startAlt;
+    else if(startAlt===-1)pStart=start;
+    else pStart=Math.min(start,startAlt);
+    const closeTag=xmlStr.indexOf('</a:p>',pStart);
+    if(closeTag===-1)break;
+    const fullParaXml=xmlStr.slice(pStart,closeTag+6);
+    // Đếm số <a:r> runs có text
+    const runRe=/<a:r(?:\s[^>]*)?>[\s\S]*?<\/a:r>/g;
+    const runs=[...fullParaXml.matchAll(runRe)];
+    // Lấy text từ <a:t>
+    const textRe=/<a:t(?:\s[^>]*)?>([^<]*)<\/a:t>/g;
+    let paraText='',tm;
+    while((tm=textRe.exec(fullParaXml))!==null){
+      paraText+=tm[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+    }
+    paragraphs.push({
+      paraText,
+      hasRuns:runs.length>0,
+      fullXml:fullParaXml,
+      textLength:paraText.length
+    });
+    idx=closeTag+6;
   }
-  return texts;
+  return paragraphs;
 }
-
-function renderPptxPreview(){
-  const wrap=document.getElementById('pptxPreview');
-  if(!pptxData){wrap.style.display='none';return;}
-  wrap.style.display='flex';
-  wrap.innerHTML=pptxData.slides.map((s,i)=>{
-    const orig=s.texts.join('\n');
-    const trans=s.translated.join('\n')||'';
-    return`<div class="slide-card" id="slide-card-${i}">
-      <div class="slide-card-head">
-        <span class="slide-num">Slide ${i+1}</span>
-        <span style="font-size:11px;color:var(--gray-400)">${s.texts.length} đoạn</span>
-      </div>
-      <div class="slide-orig">${escHtml(orig.slice(0,200))+(orig.length>200?'...':'')}</div>
-      <div class="slide-trans ${trans?'':'loading'}" id="slide-trans-${i}">${trans||'Chưa dịch...'}</div>
-    </div>`;
-  }).join('');
-}
-
 async function doTranslatePptx(){
   if(!pptxData){toast('Chưa upload file PPTX','error');return;}
+  // Kiểm tra API key trước khi dịch
+  if(currentProvider!=='free'){
+    const key=getKey(currentProvider);
+    if(!key){
+      const names={claude:'Anthropic',openai:'OpenAI',gemini:'Gemini',deepseek:'DeepSeek',grok:'xAI'};
+      toast(`❌ Chưa có ${names[currentProvider]||currentProvider} API Key! Vào Cài đặt để nhập key.`,'error');
+      return;
+    }
+  }
   const src=document.getElementById('srcLangPptx').value;
   const tgt=document.getElementById('tgtLangPptx').value;
-  const charLimit=getCharLimit();
-  const isFree=currentProvider==='free';
   document.getElementById('pptxTranslateBtn').disabled=true;
   document.getElementById('pptxProgressWrap').style.display='block';
   document.getElementById('pptxActions').style.display='none';
 
-  try{
-    for(let i=0;i<pptxData.slides.length;i++){
-      const slide=pptxData.slides[i];
-      if(!slide.texts.length){slide.translated=[];continue;}
-      document.getElementById('pptxPb').style.width=Math.round((i/pptxData.slides.length)*100)+'%';
-      setStatus('statPptx',`[${currentProvider.toUpperCase()}] Đang dịch slide ${i+1}/${pptxData.slides.length}...`,'info');
+  const totalSlides=pptxData.slides.length;
+  let translatedSlides=0;
 
+  try{
+    for(let i=0;i<totalSlides;i++){
+      const slide=pptxData.slides[i];
+      document.getElementById('pptxPb').style.width=Math.round((i/totalSlides)*100)+'%';
+      setStatus('statPptx',`[${currentProvider.toUpperCase()}] Slide ${i+1}/${totalSlides}...`,'info');
       const el=document.getElementById('slide-trans-'+i);
       if(el){el.className='slide-trans loading';el.textContent='⏳ Đang dịch...';}
 
-      // Translate all texts in slide as one batch
-      const combined=slide.texts.join('\n|||SEP|||\n');
-      const chunks=splitForAI(combined,charLimit);
-      let translated='';
-      for(const chunk of chunks){
-        const res=await callAI(chunk,src,tgt,tone1,null);
-        translated+=(translated?'\n':'')+res;
-        await delay(200);
+      // Khởi tạo mảng translated = copy nguyên bản gốc
+      slide.translated=slide.texts.map(t=>t);
+
+      // Lọc chỉ những đoạn CÓ text thực sự
+      const toTranslate=slide.texts
+        .map((text,idx)=>({text,idx}))
+        .filter(({text})=>text&&text.trim().length>=1);
+
+      if(!toTranslate.length){
+        if(el){el.className='slide-trans';el.textContent='(Slide không có text)';}
+        translatedSlides++;
+        continue;
       }
 
-      // Split back by separator
-      const parts=translated.split(/\s*\|\|\|SEP\|\|\|\s*/);
-      slide.translated=parts.length===slide.texts.length?parts:slide.texts.map((_,j)=>parts[j]||slide.texts[j]);
+      if(currentProvider==='free'){
+        // Free: dịch từng đoạn tuần tự
+        for(const {text,idx} of toTranslate){
+          try{
+            const r=await callFree(text,src,tgt);
+            slide.translated[idx]=(r||text).trim();
+          }catch(e){slide.translated[idx]=text;}
+          await delay(100);
+        }
+      } else {
+        // AI: chia batch nhỏ 6 đoạn, dùng separator rõ ràng
+        const BATCH=6;
+        for(let b=0;b<toTranslate.length;b+=BATCH){
+          const batch=toTranslate.slice(b,b+BATCH);
+          const SEP='|||NEXT|||';
 
-      if(el){
+          // Ghép các đoạn bằng separator
+          const combined=batch.map(({text})=>text).join('\n'+SEP+'\n');
+
+          const prompt=`Dịch ${src==='auto'?'văn bản (tự nhận diện ngôn ngữ)':src} sang ${tgt}.
+Văn bản gồm ${batch.length} đoạn, ngăn cách bằng "${SEP}".
+QUY TẮC:
+- Giữ NGUYÊN dấu ngăn cách "${SEP}" ở đúng vị trí
+- Dịch từng đoạn tương ứng
+- KHÔNG thêm ghi chú hay giải thích
+- Giữ nguyên xuống dòng trong mỗi đoạn
+
+${combined}`;
+
+          try{
+            const result=await callAI(prompt,src,tgt,tone1,null);
+            // Parse theo separator
+            const parts=result.split(SEP);
+            batch.forEach(({idx},bi)=>{
+              const translated=(parts[bi]||'').trim();
+              if(translated){
+                slide.translated[idx]=translated;
+              }
+            });
+
+            // Kiểm tra đoạn nào chưa được dịch
+            const missing=batch.filter(({idx})=>
+              slide.translated[idx]===slide.texts[idx]&&
+              slide.texts[idx].trim().length>0
+            );
+
+            // Retry từng đoạn bị miss
+            if(missing.length>0&&missing.length<batch.length){
+              for(const {text,idx} of missing){
+                try{
+                  const r=await callAI(text,src,tgt,tone1,null);
+                  slide.translated[idx]=(r||text).trim();
+                }catch(e2){}
+                await delay(100);
+              }
+            }
+          }catch(eBatch){
+            // Batch fail → fallback từng đoạn
+            for(const {text,idx} of batch){
+              try{
+                const r=await callAI(text,src,tgt,tone1,null);
+                slide.translated[idx]=(r||text).trim();
+              }catch(e2){slide.translated[idx]=text;}
+              await delay(150);
+            }
+          }
+          await delay(100);
+        }
+      }
+
+      translatedSlides++;
+      document.getElementById('pptxPb').style.width=Math.round((translatedSlides/totalSlides)*100)+'%';
+
+      // Update UI slide
+       if(el){
         el.className='slide-trans';
-        el.textContent=slide.translated.join('\n').slice(0,200)+(slide.translated.join('\n').length>200?'...':'');
-      }
-      await delay(300);
+        const preview=slide.translated.filter(t=>t&&t.trim()).join('\n');
+        el.textContent=preview||'(Slide trống)';
+      } 
+      // Refresh preview
+      renderPptxPreview();
+      await delay(150);
     }
 
-    document.getElementById('pptxPb').style.width='100%';
-    setStatus('statPptx',`✅ Dịch xong ${pptxData.slides.length} slides!`,'success');
+    setStatus('statPptx',`✅ Dịch xong ${totalSlides} slides!`,'success');
     document.getElementById('pptxActions').style.display='flex';
     setTimeout(()=>setStatus('statPptx','',''),3000);
   }catch(e){
     setStatus('statPptx','❌ Lỗi: '+e.message,'error');
   }finally{
     document.getElementById('pptxTranslateBtn').disabled=false;
-    setTimeout(()=>{document.getElementById('pptxProgressWrap').style.display='none';document.getElementById('pptxPb').style.width='0%';},1000);
+    setTimeout(()=>{
+      document.getElementById('pptxProgressWrap').style.display='none';
+      document.getElementById('pptxPb').style.width='0%';
+    },1000);
   }
 }
-
-async function downloadPptxTranslated(){
-  if(!pptxData||!pptxData.zip)return toast('Chưa có dữ liệu PPTX','error');
-  toast('📊 Đang tạo file PPTX đã dịch...','info');
-  try{
-    const newZip=pptxData.zip;
-
-    for(const slide of pptxData.slides){
-      if(!slide.translated||!slide.translated.length)continue;
-      let xml=slide.content;
-
-      // Replace texts in XML preserving formatting
-      let transIdx=0;
-      xml=xml.replace(/<a:t([^>]*)>([\s\S]*?)<\/a:t>/g,(match,attrs,orig)=>{
-        const t=orig.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
-        if(!t)return match;
-        const translated=slide.translated[transIdx++]||t;
-        const escaped=translated.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-        return`<a:t${attrs}>${escaped}</a:t>`;
-      });
-
-      newZip.file(slide.path,xml);
-    }
-
-    const blob=await newZip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    const origName=pptxData.file.name.replace(/\.pptx$/i,'');
-    a.download=origName+'_translated.pptx';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast('✅ Đã tải PPTX đã dịch!','success');
-  }catch(e){
-    toast('❌ Lỗi tạo PPTX: '+e.message,'error');
-  }
-}
-
 function copyPptxResult(){
   if(!pptxData)return;
   const text=pptxData.slides.map((s,i)=>`=== Slide ${i+1} ===\n${s.translated.join('\n')||s.texts.join('\n')}`).join('\n\n');
@@ -1710,7 +2282,7 @@ function switchTab(id,btn){
   btn.classList.add('active');
   if(id==='history')renderHistory();
   if(id==='settings')renderStats();
-  if(id==='dict')renderDict();
+ if(id==='notes')renderNotes();
 }
 
 /* ══ TONE & MISC ══ */
@@ -1778,9 +2350,25 @@ async function callFree(text,srcLang,tgtLang){
 
 /* ══ AI CALLS ══ */
 function buildPrompt(text,srcLang,tgtLang,tone){
-  const langNote=srcLang==='auto'?'(tự động nhận diện ngôn ngữ gốc)':'từ '+srcLang;
+  const langNote=srcLang==='auto'?'(tự động nhận diện và ghi rõ ngôn ngữ gốc)':'từ '+srcLang;
   const glossaryNote=buildGlossaryNote();
-  return `Bạn là chuyên gia dịch thuật. Dịch đoạn văn bản sau ${langNote} sang ${tgtLang} với phong cách ${tone}.\n\nQUAN TRỌNG:\n- Dịch TOÀN BỘ nội dung, không bỏ sót câu nào\n- GIỮ NGUYÊN cấu trúc xuống dòng, đoạn văn gốc\n- Chỉ trả về bản dịch thuần túy${glossaryNote}\n\nVăn bản gốc:\n${text}`;
+  return `Bạn là chuyên gia dịch thuật hàng đầu với 20 năm kinh nghiệm, chuyên dịch tài liệu chuyên nghiệp với độ chính xác cao.
+
+NHIỆM VỤ: Dịch văn bản ${langNote} sang ${tgtLang} với phong cách ${tone}.
+
+NGUYÊN TẮC DỊCH THUẬT:
+1. ĐỘ CHÍNH XÁC: Dịch chính xác 100% nội dung, không thêm/bớt/diễn giải
+2. PHONG CÁCH: Áp dụng phong cách "${tone}" nhất quán xuyên suốt
+3. CẤU TRÚC: Giữ nguyên hoàn toàn: xuống dòng, đoạn văn, khoảng cách, thụt đầu dòng
+4. THUẬT NGỮ: Dịch thuật ngữ nhất quán — từ nào đã dịch theo một cách thì giữ nguyên cách đó
+5. TÊN RIÊNG: Tên người, địa danh, tổ chức — giữ nguyên hoặc phiên âm chuẩn theo quy tắc ${tgtLang}
+6. SỐ & ĐƠN VỊ: Giữ nguyên số liệu, đơn vị đo lường, tiền tệ
+7. ĐỊNH DẠNG: Giữ nguyên bullet points, đánh số thứ tự, bảng biểu dạng text${glossaryNote}
+
+ĐẦU RA: Chỉ trả về bản dịch thuần túy, không có giải thích, không có ghi chú, không có tiêu đề.
+
+VĂN BẢN GỐC:
+${text}`;
 }
 async function callAI(text,srcLang,tgtLang,tone,onStream){
   const p=currentProvider;
@@ -1839,7 +2427,36 @@ async function callGrok(prompt,onStream){
 
 /* ══ HELPERS ══ */
 function splitByNewline(text,maxLen){const lines=text.split('\n'),chunks=[],buf=[];let len=0;for(const line of lines){if(len+line.length+1>maxLen&&buf.length){chunks.push(buf.join('\n'));buf.length=0;len=0;}buf.push(line);len+=line.length+1;}if(buf.length)chunks.push(buf.join('\n'));return chunks.length?chunks:[text];}
-function splitForAI(text,maxLen){if(maxLen===Infinity||text.length<=maxLen)return[text];const paras=text.split(/\n{2,}/),chunks=[];let buf='';for(const para of paras){if(buf.length+para.length+2>maxLen&&buf){chunks.push(buf.trim());buf='';}buf+=(buf?'\n\n':'')+para;}if(buf)chunks.push(buf.trim());const result=[];for(const c of chunks){if(c.length<=maxLen){result.push(c);continue;}const sents=c.match(/[^.!?\n]{1,}[.!?\n]?/g)||[c];let s='';for(const sent of sents){if(s.length+sent.length>maxLen&&s){result.push(s.trim());s='';}s+=sent;}if(s)result.push(s.trim());}return result.filter(x=>x.length>0).length?result.filter(x=>x.length>0):[text];}
+function splitForAI(text,maxLen){
+  if(maxLen===Infinity||text.length<=maxLen)return[text];
+  // Ưu tiên tách theo đoạn (2+ dòng trống)
+  const paras=text.split(/\n{2,}/);
+  const chunks=[];let buf='';
+  for(const para of paras){
+    if(buf.length+para.length+2>maxLen&&buf){
+      chunks.push(buf.trimEnd());buf='';
+    }
+    buf+=(buf?'\n\n':'')+para;
+  }
+  if(buf.trim())chunks.push(buf.trimEnd());
+  // Nếu chunk nào vẫn > maxLen thì tách tiếp theo dòng đơn
+  const result=[];
+  for(const c of chunks){
+    if(c.length<=maxLen){result.push(c);continue;}
+    const lines=c.split('\n');
+    let lineBuf='';
+    for(const line of lines){
+      if(lineBuf.length+line.length+1>maxLen&&lineBuf){
+        result.push(lineBuf.trimEnd());lineBuf='';
+      }
+      lineBuf+=(lineBuf?'\n':'')+line;
+    }
+    if(lineBuf.trim())result.push(lineBuf.trimEnd());
+  }
+  return result.filter(x=>x.trim().length>0).length
+    ?result.filter(x=>x.trim().length>0)
+    :[text];
+}
 function getCharLimit(){const v=parseInt(document.getElementById('chunkLimit')?.value||'8000');return v===0?Infinity:v;}
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
