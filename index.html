@@ -226,7 +226,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
 .result-body{padding:0;max-height:480px;overflow-y:auto;font-size:14px;line-height:1.9;color:var(--gray-800);word-break:break-word;background:var(--white)}
 .result-body::-webkit-scrollbar{width:4px}
 .result-body::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
-.result-segment{padding:14px 18px;white-space:pre-wrap;position:relative}
+.result-segment{padding:16px 20px;white-space:pre-wrap;position:relative;line-height:1.95;letter-spacing:.15px}
 .result-page-break{display:flex;align-items:center;gap:12px;padding:8px 18px;background:linear-gradient(135deg,#fff5f5,#fff);border-top:1.5px dashed #fca5a5;border-bottom:1.5px dashed #fca5a5}
 .result-page-break .rpb-label{font-size:11px;font-weight:800;color:var(--page-break-color);letter-spacing:.8px;white-space:nowrap;display:flex;align-items:center;gap:5px}
 .result-page-break .rpb-num{background:var(--page-break-color);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px}
@@ -444,6 +444,23 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
 .toast.error{border-left:3px solid var(--red)}
 .toast.info{border-left:3px solid var(--blue)}
 
+.app{box-shadow:var(--shadow-lg),0 0 80px rgba(124,58,237,.10)}
+
+.result-card{transition:box-shadow .25s ease}
+.result-card:hover{box-shadow:var(--shadow-md)}
+.result-body::-webkit-scrollbar-thumb:hover{background:var(--purple-dark)}
+
+.primary-btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none}
+.primary-btn:hover:not(:disabled)::after{left:140%}
+
+.slide-card{transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}
+.slide-card:hover{box-shadow:var(--shadow-sm);border-color:#ddd6fe;transform:translateY(-1px)}
+
+.tab-btn.active{position:relative}
+.tab-btn.active::after{content:'';position:absolute;left:18%;right:18%;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:2px}
+
+#imgQueueList>div{transition:box-shadow .2s ease,transform .2s ease}
+#imgQueueList>div:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px)}
 @media(max-width:640px){
   .app-body{padding:16px 18px 28px}
   .header-inner{padding:32px 20px 44px}
@@ -456,6 +473,7 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .tabs .tab-btn{font-size:9.5px;padding:6px 2px}
 }
+
 </style>
 </head>
 <body>
@@ -683,13 +701,39 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
             <button class="retranslate-btn" id="retranslateBtn" onclick="retranslateAlt()">🔄 Dịch lại</button>
           </div>
         </div>
-        <div class="result-body" id="rb2"></div>
+       <div class="result-body" id="rb2" style="padding:0;position:relative">
+<div id="editToolbar" style="display:none;position:relative;z-index:10;background:#fff;border-bottom:1px solid #e2e8f0;padding:8px 12px;gap:6px;flex-wrap:wrap;align-items:center;width:100%;box-sizing:border-box">
+      <button onclick="execCmd('bold')" title="Bôi đậm" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'"><b>B</b></button>
+      <button onclick="execCmd('italic')" title="Nghiêng" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'"><i>I</i></button>
+      <button onclick="execCmd('underline')" title="Gạch chân" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'"><u>U</u></button>
+      <button onclick="execCmd('strikeThrough')" title="Gạch ngang" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'"><s>S</s></button>
+      <div style="width:1px;height:24px;background:var(--gray-200);margin:0 2px"></div>
+      <label title="Highlight" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;font-size:16px" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'">
+        🖍️<input type="color" id="hlColorPick" value="#fbbf24" onchange="execHighlight(this.value)" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;top:0;left:0">
+      </label>
+      <label title="Màu chữ" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;font-size:16px" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'">
+        🎨<input type="color" id="fontColorPick" value="#7c3aed" onchange="execFontColor(this.value)" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;top:0;left:0">
+      </label>
+      <div style="width:1px;height:24px;background:var(--gray-200);margin:0 2px"></div>
+      <button onclick="execCmd('insertUnorderedList')" title="Danh sách" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'">≡</button>
+      <button onclick="execCmd('justifyLeft')" title="Căn trái" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'">⬅</button>
+      <button onclick="execCmd('justifyCenter')" title="Căn giữa" style="width:30px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='#fff'">⬛</button>
+      <button onclick="execCmd('removeFormat')" title="Xóa định dạng" style="padding:0 10px;height:30px;border:1.5px solid var(--gray-200);border-radius:6px;background:#fff;cursor:pointer;font-size:11px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:3px" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">✕ Xóa định dạng</button>
+      <div style="margin-left:auto;display:flex;gap:5px">
+        <button onclick="saveEditedResult()" style="padding:0 12px;height:30px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer">💾 Lưu</button>
+        <button onclick="toggleEditMode(false)" style="padding:0 12px;height:30px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer">✕ Thoát</button>
+      </div>
+    </div>
+    <div id="rb2inner" style="padding:16px 20px;outline:none;min-height:80px;white-space:pre-wrap;word-break:break-word;line-height:1.9;font-size:14px;color:var(--gray-800)"></div>
+  </div>
         <div class="result-footer">
           <button class="action-btn" onclick="copyResultText(2)">📋 Sao chép</button>
+          <button class="action-btn" id="editModeBtn" onclick="toggleEditMode(true)">✏️ Sửa</button>
           <button class="action-btn green" onclick="dlTxt(2)">📝 .txt</button>
           <button class="action-btn green" onclick="dlDocxFile(2)">📘 .docx</button>
           <button class="action-btn" onclick="openTTSModal(2)">🔊 Đọc…</button>
           <button class="action-btn" onclick="loadIntoTextFrom2()">↕️ Dịch ngược</button>
+          <button class="action-btn" onclick="retryTranslation()">🔁 Thử lại</button>
         </div>
       </div>
       <button class="primary-btn" id="tBtn2" onclick="doTranslateText()">⚡ Dịch ngay</button>
@@ -720,24 +764,6 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
   <div id="statImg" class="status-wrap"></div>
   <button class="primary-btn" id="imgTranslateBtn" onclick="doTranslateAllImages()" style="display:none">🔍 OCR & Dịch tất cả ảnh</button>
 </div>
-      <div id="statImg" class="status-wrap"></div>
-      <div id="imgResultWrap" style="display:none" class="img-result-wrap">
-        <div class="img-col">
-          <label>📄 Văn bản gốc (OCR)</label>
-          <div class="img-text" id="imgOcrText"></div>
-        </div>
-        <div class="img-col">
-          <label>✅ Bản dịch</label>
-          <div class="img-text translated" id="imgTranslated"></div>
-        </div>
-      </div>
-      <div id="imgActionWrap" style="display:none;margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="action-btn" onclick="copyImgResult('ocr')">📋 Sao chép OCR</button>
-        <button class="action-btn green" onclick="copyImgResult('trans')">📋 Sao chép dịch</button>
-        <button class="action-btn" onclick="loadImgIntoText()">✏️ Sửa trong ô dịch</button>
-      </div>
-      <button class="primary-btn" id="imgTranslateBtn" onclick="doTranslateImage()" style="display:none">🔍 OCR & Dịch ảnh</button>
-    </div>
 
     <!-- TAB: PPTX -->
     <div id="panel-pptx" class="panel">
@@ -848,62 +874,191 @@ textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.
 
 
 <!-- FOOTER -->
-<footer style="position:relative;z-index:1;width:100%;max-width:1000px;margin-top:0;background:linear-gradient(135deg,#0a0b1a,#060714);border-top:1px solid rgba(255,255,255,.07);padding:36px 48px 28px;">
-  <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px;margin-bottom:28px">
-    <!-- Brand -->
-    <div>
-      <div style="font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <span style="animation:globespin 10s linear infinite;display:inline-block">♥</span>
-        <span style="background:linear-gradient(110deg,#c084fc,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">NIGGEST WEB</span>
+<footer id="site-footer" style="position:relative;z-index:1;width:100%;max-width:1000px;margin-top:0;overflow:hidden">
+  <canvas id="footer-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+  <div style="position:relative;z-index:1;padding:48px 48px 28px">
+    <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px;margin-bottom:36px">
+      <!-- Brand -->
+      <div>
+        <div style="font-size:22px;font-weight:900;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="display:inline-block;animation:globespin 8s linear infinite">♥</span>
+          <span id="footer-brand-text" style="background:linear-gradient(110deg,#c084fc,#60a5fa,#34d399,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:textshift 4s ease infinite alternate">NIGGEST WEB</span>
+        </div>
+        <p style="font-size:12.5px;color:rgba(255,255,255,.35);line-height:1.9;margin-bottom:20px">Website dịch nhà làm<br>by <span style="color:#a78bfa;font-weight:700">@motkiki</span> với ❤️</p>
+        <!-- Social icons -->
+        <div style="display:flex;gap:10px">
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/victervent/" target="_blank" title="Instagram" class="footer-social-btn" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);box-shadow:0 4px 15px rgba(220,39,67,.4)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <!-- Facebook -->
+          <a href="https://www.facebook.com/nguyen.minh.nguyen.116824" target="_blank" title="Facebook" class="footer-social-btn" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .3s;background:#1877f2;box-shadow:0 4px 15px rgba(24,119,242,.4)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <!-- YouTube -->
+          <a href="https://youtube.com" target="_blank" title="YouTube" class="footer-social-btn" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .3s;background:#ff0000;box-shadow:0 4px 15px rgba(255,0,0,.4)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#ff0000"/></svg>
+          </a>
+        </div>
       </div>
-      <p style="font-size:12.5px;color:rgba(255,255,255,.35);line-height:1.8;margin-bottom:16px">NHĂM NHĂM NHĂM NHĂm</p>
-      <!-- Social -->
-      <div style="display:flex;gap:10px">
-        <a href="https://www.instagram.com/victervent/" target="_blank" title="Instagram" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';this.style.borderColor='transparent'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.12)'">📸</a>
-        <a href="https://www.facebook.com/nguyen.minh.nguyen.116824" target="_blank" title="Facebook" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;transition:all .2s" onmouseover="this.style.background='#1877f2';this.style.borderColor='#1877f2'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.12)'">👥</a>
-        
+      <!-- Tính năng -->
+      <div>
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,.3);margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <div style="width:16px;height:1px;background:linear-gradient(90deg,#7c3aed,transparent)"></div>Tính năng
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <a href="#" onclick="switchTab('file',document.querySelectorAll('.tab-btn')[0]);window.scrollTo({top:0,behavior:'smooth'});return false" class="footer-link">
+            <span style="font-size:14px">📄</span> Dịch tệp PDF & DOCX
+          </a>
+          <a href="#" onclick="switchTab('text',document.querySelectorAll('.tab-btn')[1]);window.scrollTo({top:0,behavior:'smooth'});return false" class="footer-link">
+            <span style="font-size:14px">⌨️</span> Dịch văn bản
+          </a>
+          <a href="#" onclick="switchTab('image',document.querySelectorAll('.tab-btn')[2]);window.scrollTo({top:0,behavior:'smooth'});return false" class="footer-link">
+            <span style="font-size:14px">🖼️</span> OCR & Dịch hình ảnh
+          </a>
+          <a href="#" onclick="switchTab('pptx',document.querySelectorAll('.tab-btn')[3]);window.scrollTo({top:0,behavior:'smooth'});return false" class="footer-link">
+            <span style="font-size:14px">📊</span> Dịch PowerPoint
+          </a>
+          <a href="#" onclick="switchTab('history',document.querySelectorAll('.tab-btn')[4]);window.scrollTo({top:0,behavior:'smooth'});return false" class="footer-link">
+            <span style="font-size:14px">🕘</span> Lịch sử dịch
+          </a>
+        </div>
+      </div>
+      <!-- AI -->
+      <div>
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,.3);margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <div style="width:16px;height:1px;background:linear-gradient(90deg,#7c3aed,transparent)"></div>AI hỗ trợ
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div class="footer-ai-pill" onclick="selectProvider('claude',document.querySelectorAll('.provider-card')[0]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#c084fc;box-shadow:0 0 8px #c084fc;flex-shrink:0;display:inline-block"></span> Claude
+          </div>
+          <div class="footer-ai-pill" onclick="selectProvider('openai',document.querySelectorAll('.provider-card')[1]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;flex-shrink:0;display:inline-block"></span> ChatGPT
+          </div>
+          <div class="footer-ai-pill" onclick="selectProvider('gemini',document.querySelectorAll('.provider-card')[2]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#60a5fa;box-shadow:0 0 8px #60a5fa;flex-shrink:0;display:inline-block"></span> Gemini
+          </div>
+          <div class="footer-ai-pill" onclick="selectProvider('deepseek',document.querySelectorAll('.provider-card')[3]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#fb923c;box-shadow:0 0 8px #fb923c;flex-shrink:0;display:inline-block"></span> DeepSeek
+          </div>
+          <div class="footer-ai-pill" onclick="selectProvider('grok',document.querySelectorAll('.provider-card')[4]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#a78bfa;box-shadow:0 0 8px #a78bfa;flex-shrink:0;display:inline-block"></span> Grok <span style="font-size:9px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;padding:1px 5px;border-radius:99px;font-weight:800">NEW</span>
+          </div>
+          <div class="footer-ai-pill" onclick="selectProvider('free',document.querySelectorAll('.provider-card')[5]);window.scrollTo({top:0,behavior:'smooth'})">
+            <span style="width:8px;height:8px;border-radius:50%;background:#facc15;box-shadow:0 0 8px #facc15;flex-shrink:0;display:inline-block"></span> Google Translate <span style="font-size:9px;background:#059669;color:#fff;padding:1px 5px;border-radius:99px;font-weight:800">FREE</span>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Tính năng -->
-    <div>
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.25);margin-bottom:14px">Tính năng</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <a href="#" onclick="switchTab('file',document.querySelectorAll('.tab-btn')[0]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>📄</span> Dịch tệp PDF & DOCX</a>
-        <a href="#" onclick="switchTab('text',document.querySelectorAll('.tab-btn')[1]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>⌨️</span> Dịch văn bản</a>
-        <a href="#" onclick="switchTab('image',document.querySelectorAll('.tab-btn')[2]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>🖼️</span> OCR & Dịch hình ảnh</a>
-        <a href="#" onclick="switchTab('pptx',document.querySelectorAll('.tab-btn')[3]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>📊</span> Dịch PowerPoint</a>
-        <a href="#" onclick="switchTab('history',document.querySelectorAll('.tab-btn')[5]);window.scrollTo({top:0,behavior:'smooth'});return false" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:7px;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'"><span>🕘</span> Lịch sử dịch</a>
+    <!-- Bottom -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:10px">
+      <div style="font-size:12px;color:rgba(255,255,255,.2)">© 2026 <strong style="color:rgba(255,255,255,.4)">NIGGEST WEB</strong> · Made with ❤️ by <a href="https://locket.cam/motkikiolor:#a78bfa;text-decoration:none;font-weight:700">@motkiki</a></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)">v1.0</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)">🆓 Free Plan</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3)">🔒 Keys riêng tư</span>
       </div>
-    </div>
-    <!-- AI hỗ trợ -->
-    <div>
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.25);margin-bottom:14px">AI hỗ trợ</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>✨</span> Claude (Anthropic)</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🤖</span> ChatGPT (OpenAI)</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>💎</span> Gemini (Google)</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🔷</span> DeepSeek</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>⚡</span> Grok (xAI)</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:7px"><span>🆓</span> Google Translate (Free)</div>
-      </div>
-    </div>
-  </div>
-  <!-- Bottom bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:10px">
-    <div style="font-size:12px;color:rgba(255,255,255,.2)">© 2026 <strong style="color:rgba(255,255,255,.4)">NIGGEST WEB</strong> BY <a href="https://instagram.com/motkiki" target="_blank" style="color:rgba(124,58,237,.8);text-decoration:none;font-weight:700">@motkiki</a></div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap">
-      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)">v1.0</span>
-      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)">🆓 Free Plan</span>
-      <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3)">🔒 Keys riêng tư</span>
     </div>
   </div>
 </footer>
 
+<style>
+.footer-link{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:8px;transition:all .2s;padding:4px 0}
+.footer-link:hover{color:#fff;transform:translateX(4px)}
+.footer-ai-pill{font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .2s;padding:4px 0}
+.footer-ai-pill:hover{color:#fff;transform:translateX(4px)}
+.footer-social-btn:hover{transform:translateY(-4px) scale(1.08)!important;filter:brightness(1.15)}
+</style>
+
+<script>
+(function(){
+  const canvas=document.getElementById('footer-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const footer=document.getElementById('site-footer');
+  let W,H,particles=[];
+
+  function resize(){
+    W=canvas.width=footer.offsetWidth;
+    H=canvas.height=footer.offsetHeight;
+  }
+  resize();
+  new ResizeObserver(resize).observe(footer);
+
+  // Tạo particles
+  for(let i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*1000,y:Math.random()*300,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.2,
+      r:Math.random()*1.5+.3,
+      a:Math.random(),
+      c:[Math.random()>.5?'124,58,237':'59,130,246'][0]
+    });
+  }
+
+  const colors=['rgba(124,58,237,','rgba(59,130,246,','rgba(16,185,129,','rgba(236,72,153,'];
+  let t=0;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Dark bg
+    ctx.fillStyle='#060714';
+    ctx.fillRect(0,0,W,H);
+
+    // Aurora blobs
+    const blobs=[
+      {x:.1,y:.6,r:.5,c:colors[0]},
+      {x:.5,y:.2,r:.45,c:colors[1]},
+      {x:.85,y:.7,r:.4,c:colors[2]},
+      {x:.3,y:.8,r:.35,c:colors[3]}
+    ];
+    blobs.forEach((b,i)=>{
+      const ox=Math.sin(t*0.5+i*1.3)*.06;
+      const oy=Math.cos(t*0.4+i*.9)*.05;
+      const gr=ctx.createRadialGradient((b.x+ox)*W,(b.y+oy)*H,0,(b.x+ox)*W,(b.y+oy)*H,b.r*W);
+      gr.addColorStop(0,b.c+'0.18)');
+      gr.addColorStop(.6,b.c+'0.06)');
+      gr.addColorStop(1,b.c+'0)');
+      ctx.fillStyle=gr;
+      ctx.fillRect(0,0,W,H);
+    });
+
+    // Particles
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const pulse=.4+.4*Math.sin(t*1.2+p.a*6);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(167,139,250,${pulse*.7})`;
+      ctx.fill();
+    });
+
+    // Top border glow
+    const topGrad=ctx.createLinearGradient(0,0,W,0);
+    topGrad.addColorStop(0,'rgba(124,58,237,0)');
+    topGrad.addColorStop(.3,'rgba(124,58,237,.6)');
+    topGrad.addColorStop(.6,'rgba(59,130,246,.5)');
+    topGrad.addColorStop(1,'rgba(124,58,237,0)');
+    ctx.fillStyle=topGrad;
+    ctx.fillRect(0,0,W,1.5);
+
+    t+=.008;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+
 <!-- SELECTION TOOLBAR -->
-<div id="selectionToolbar">
-  <button class="stb-save" onclick="saveSelectedToDict()">📚 Lưu từ điển</button>
-  <button class="stb-translate" onclick="translateSelectedQuick()">⚡ Dịch nhanh</button>
-  <button class="stb-dismiss" onclick="hideSelectionToolbar()">✕</button>
+<div id="selectionToolbar" style="position:fixed;z-index:500;display:none;background:#0f172a;border-radius:99px;padding:5px 6px;gap:5px;box-shadow:0 8px 24px rgba(0,0,0,.3)">
+  <button onclick="saveSelectedToDict()" style="padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:#7c3aed;color:#fff">📚 Lưu từ điển</button>
+  <button onclick="translateSelectedQuick()" style="padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:#059669;color:#fff">⚡ Dịch nhanh</button>
+  <button onclick="hideSelectionToolbar()" style="padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)">✕</button>
 </div>
 
 <!-- QUICK TRANSLATE POPUP -->
@@ -1837,7 +1992,8 @@ function renderImgQueue(){
       <div style="padding:8px 12px;display:flex;gap:6px;border-top:1px solid var(--gray-100)">
         <button class="action-btn" onclick="copyImgItemText(${i},'ocr')" style="font-size:11px;padding:5px 10px">📋 Copy OCR</button>
         <button class="action-btn green" onclick="copyImgItemText(${i},'trans')" style="font-size:11px;padding:5px 10px">📋 Copy dịch</button>
-        <button class="action-btn" onclick="loadImgItemIntoText(${i})" style="font-size:11px;padding:5px 10px">✏️ Sửa trong ô dịch</button>
+      <button class="action-btn" onclick="loadImgItemIntoText(${i})" style="font-size:11px;padding:5px 10px">✏️ Sửa trong ô dịch</button>
+<button class="action-btn" onclick="retryImgItem(${i})" style="font-size:11px;padding:5px 10px">🔄 Thử lại</button>
       </div>`:''}
       ${item.status==='error'?`<div style="padding:10px 12px;font-size:12px;color:#991b1b">❌ ${escHtml(item.ocr||'Lỗi không xác định')}</div>`:''}
     </div>`;
@@ -1848,28 +2004,66 @@ function removeImgItem(i){imgQueue.splice(i,1);renderImgQueue();if(!imgQueue.len
 function copyImgItemText(i,type){const item=imgQueue[i];navigator.clipboard.writeText(type==='ocr'?item.ocr:item.translated).then(()=>toast('✅ Đã sao chép!','success'));}
 function loadImgItemIntoText(i){const item=imgQueue[i];document.getElementById('textIn').value=item.ocr;updateCC();switchTab('text',document.querySelectorAll('.tab-btn')[1]);toast('✏️ Đã tải vào ô dịch','info');}
 
-// Tesseract-based free OCR
-async function ocrWithTesseract(base64,mime,srcLang){
-  return new Promise((resolve,reject)=>{
-    // Load Tesseract if not loaded
-    if(!window.Tesseract){
-      const s=document.createElement('script');
-      s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js';
-      s.onload=()=>doOcr();
-      s.onerror=()=>reject(new Error('Không tải được Tesseract'));
+// Làm sạch text OCR: nối các dòng cùng đoạn lại bằng khoảng trắng, giữ ranh giới đoạn (2+ dòng trống)
+function cleanOcrText(text) {
+  if (!text) return text;
+  return text
+    .replace(/\r/g, '')
+    // Xóa các ký tự lạ OCR hay nhầm
+    .replace(/[|}{\\]/g, '')
+    // Nối từ bị gạch ngang xuống dòng
+    .replace(/[-‐]\n/g, '')
+    // Giữ ranh giới đoạn (2+ dòng trống)
+    .replace(/\n{3,}/g, '§§PARA§§')
+    .replace(/\n{2}/g, '§§PARA§§')
+    // Dòng đơn trong cùng đoạn → nối bằng khoảng trắng
+    .replace(/\n/g, ' ')
+    .replace(/§§PARA§§/g, '\n\n')
+    // Xóa khoảng trắng thừa
+    .replace(/[ \t]{2,}/g, ' ')
+    // Fix dấu câu tiếng Việt hay bị OCR sai
+    .replace(/\s+([.,!?;:])/g, '$1')
+    .replace(/([.,!?])\s*([A-ZÁÀẢÃẠĂẮẶẰẲẴÂẤẦẨẪẬĐÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ])/g, '$1 $2')
+    .trim();
+}
+
+async function ocrWithTesseract(base64, mime, srcLang) {
+  return new Promise((resolve, reject) => {
+    if (!window.Tesseract) {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js';
+      s.onload = () => doOcr();
+      s.onerror = () => reject(new Error('Không tải được Tesseract'));
       document.head.appendChild(s);
     } else doOcr();
 
-    function doOcr(){
-      const langMap={'tiếng Việt':'vie','tiếng Anh':'eng','tiếng Trung (giản thể)':'chi_sim','tiếng Nhật':'jpn','tiếng Hàn':'kor','tiếng Pháp':'fra','tiếng Đức':'deu','auto':'eng+vie'};
-      const tessLang=langMap[srcLang]||'eng';
-      const imgSrc=`data:${mime};base64,${base64}`;
-      Tesseract.recognize(imgSrc,tessLang,{logger:()=>{}})
-        .then(({data:{text}})=>resolve(text.trim()))
+    function doOcr() {
+      // Thêm vie+eng để nhận diện tiếng Việt tốt hơn
+      const langMap = {
+        'tiếng Việt': 'vie+eng',
+        'tiếng Anh': 'eng',
+        'tiếng Trung (giản thể)': 'chi_sim+eng',
+        'tiếng Nhật': 'jpn+eng',
+        'tiếng Hàn': 'kor+eng',
+        'tiếng Pháp': 'fra+eng',
+        'tiếng Đức': 'deu+eng',
+        'auto': 'vie+eng'  // ← mặc định ưu tiên Việt
+      };
+      const tessLang = langMap[srcLang] || 'vie+eng';
+      const imgSrc = `data:${mime};base64,${base64}`;
+
+      Tesseract.recognize(imgSrc, tessLang, {
+        logger: () => {},
+        tessedit_pageseg_mode: '3',        // auto page segmentation
+        tessedit_char_whitelist: '',        // không giới hạn ký tự
+        preserve_interword_spaces: '1',    // giữ khoảng trắng
+      })
+        .then(({ data: { text } }) => resolve(cleanOcrText(text)))
         .catch(reject);
     }
   });
 }
+
 
 async function doTranslateAllImages(){
   if(!imgQueue.length)return;
@@ -1948,6 +2142,33 @@ async function doTranslateAllImages(){
   setStatus('statImg',`✅ Xong: ${doneCount} ảnh thành công${errCount?' · '+errCount+' lỗi':''}`,doneCount>0?'success':'error');
   setTimeout(()=>setStatus('statImg','',''),3000);
   document.getElementById('imgTranslateBtn').disabled=false;
+}
+async function retryImgItem(i) {
+  const item = imgQueue[i];
+  if (!item) return;
+  item.status = 'pending';
+  item.ocr = '';
+  item.translated = '';
+  renderImgQueue();
+  const src = document.getElementById('srcLangImg').value;
+  const tgt = document.getElementById('tgtLangImg').value;
+  item.status = 'processing';
+  renderImgQueue();
+  try {
+    const ocrText = await ocrWithTesseract(item.base64, item.mime, src);
+    item.ocr = ocrText || '(Không đọc được)';
+    if (ocrText && ocrText.trim()) {
+      const translated = await callFree(ocrText, src, tgt);
+      item.translated = translated || '(Không dịch được)';
+    } else {
+      item.translated = '(Không có văn bản)';
+    }
+    item.status = 'done';
+  } catch (e) {
+    item.status = 'error';
+    item.ocr = 'Lỗi: ' + e.message;
+  }
+  renderImgQueue();
 }
 
 // Legacy compat
@@ -2218,7 +2439,7 @@ function init(){
   updateProviderUI();updateFreeEngineInfo();addGlossaryRow();initVoice();
   document.getElementById('textIn').addEventListener('keydown',e=>{
     if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();doTranslateText();}
-    if(e.ctrlKey&&e.key==='k'){e.preventDefault();clearTextInput();}
+    if(e.ctrlKey&&e.shiftKey&&e.key==='C'){e.preventDefault();copyResultText(2);}
   });
 }
 function updateDot(p){const k=localStorage.getItem('tx_key_'+p)||'';const dot=document.getElementById('dot-'+p);if(dot)dot.className='status-dot '+(k?'dot-ok':'dot-no');}
@@ -2282,7 +2503,7 @@ function switchTab(id,btn){
   btn.classList.add('active');
   if(id==='history')renderHistory();
   if(id==='settings')renderStats();
- if(id==='notes')renderNotes();
+
 }
 
 /* ══ TONE & MISC ══ */
@@ -2483,8 +2704,56 @@ dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');addFiles(e.dataTransfer.files)});
 document.getElementById('fileIn').addEventListener('change',e=>addFiles(e.target.files));
 function addFiles(fl){const ok=[...fl].filter(f=>/\.(pdf|docx|doc|txt)$/i.test(f.name));if(!ok.length)return toast('Chỉ hỗ trợ PDF, DOCX, DOC, TXT','error');files=[...files,...ok];renderFileList();document.getElementById('tBtn1').style.display='flex';}
-function renderFileList(){document.getElementById('fileList').innerHTML=files.map((f,i)=>`<div class="file-row"><span class="file-icon">${/\.pdf$/i.test(f.name)?'📕':/\.docx?$/i.test(f.name)?'📘':'📝'}</span><div class="file-info"><div class="file-name">${f.name}</div><div class="file-meta">${(f.size/1024).toFixed(1)} KB</div></div><button class="rm-btn" onclick="removeFile(${i})">✕</button></div>`).join('');}
+function renderFileList(){document.getElementById('fileList').innerHTML=files.map((f,i)=>`<div class="file-row"><span class="file-icon">${/\.pdf$/i.test(f.name)?'📕':/\.docx?$/i.test(f.name)?'📘':'📝'}</span><div class="file-info"><div class="file-name">${f.name}</div><<div class="file-meta">${(f.size/1024).toFixed(1)} KB · ${/\.pdf$/i.test(f.name)?'PDF':(/\.docx?$/i.test(f.name)?'Word':'Text')}</div></div><button class="rm-btn" onclick="removeFile(${i})">✕</button></div>`).join('');}
 function removeFile(i){files.splice(i,1);renderFileList();if(!files.length)document.getElementById('tBtn1').style.display='none';}
+
+/* ══ EXTRACT TEXT WITH PAGES ══ */
+/* ══ Ghép các dòng PDF thành đoạn văn liền mạch (tránh xuống dòng lung tung) ══ */
+function pdfItemsToText(items){
+  if(!items.length)return '';
+  // Sắp xếp theo Y (trên->dưới), rồi X (trái->phải)
+  const sorted=[...items].sort((a,b)=>{
+    const dy=b.transform[5]-a.transform[5];
+    if(Math.abs(dy)>1.5)return dy;
+    return a.transform[4]-b.transform[4];
+  });
+  // Gom theo dòng (cùng Y ~)
+  const lines=[];
+  let curY=sorted[0].transform[5],curStrs=[];
+  sorted.forEach(it=>{
+    const y=it.transform[5];
+    if(Math.abs(y-curY)>1.5){
+      lines.push({y:curY,text:curStrs.join('').replace(/\s+/g,' ').trim()});
+      curY=y;curStrs=[it.str];
+    } else curStrs.push(it.str);
+  });
+  lines.push({y:curY,text:curStrs.join('').replace(/\s+/g,' ').trim()});
+
+  // Tính khoảng cách dòng phổ biến (median) để nhận biết ranh giới đoạn
+  const gaps=[];
+  for(let i=1;i<lines.length;i++){const g=lines[i-1].y-lines[i].y;if(g>0)gaps.push(g);}
+  gaps.sort((a,b)=>a-b);
+  const lineH=gaps.length?gaps[Math.floor(gaps.length/2)]:12;
+
+  // Ghép dòng -> đoạn văn: cách nhau bất thường = đoạn mới, còn lại nối bằng dấu cách
+  let out='',prevY=null,prevText='';
+  lines.forEach(l=>{
+    if(!l.text){prevY=l.y;return;}
+    if(prevY===null){out=l.text;}
+    else{
+      const gap=prevY-l.y;
+      if(gap>lineH*1.4){
+        out+='\n\n'+l.text; // đoạn văn mới
+      }else if(/[-‐]$/.test(prevText)){
+        out=out.slice(0,-1)+l.text; // nối từ bị gạch xuống dòng
+      }else{
+        out+=' '+l.text; // cùng đoạn -> nối bằng khoảng trắng
+      }
+    }
+    prevY=l.y;prevText=l.text;
+  });
+  return out;
+}
 
 /* ══ EXTRACT TEXT WITH PAGES ══ */
 async function extractTextWithPages(file){
@@ -2495,9 +2764,7 @@ async function extractTextWithPages(file){
     const pagesData=[];
     for(let i=1;i<=pdf.numPages;i++){
       const pg=await pdf.getPage(i);const c=await pg.getTextContent();
-      const byY={};c.items.forEach(item=>{const y=Math.round(item.transform[5]);if(!byY[y])byY[y]=[];byY[y].push(item.str);});
-      const ys=Object.keys(byY).map(Number).sort((a,b)=>b-a);
-      pagesData.push(ys.map(y=>byY[y].join(' ')).join('\n'));
+      pagesData.push(pdfItemsToText(c.items));
     }
     return{text:pagesData.join('\n\n__PAGE_BREAK__\n\n'),pages:pdf.numPages,pagesData,isDoc:false};
   }
@@ -2611,22 +2878,24 @@ async function doTranslateText(){
     for(let ci=0;ci<chunks.length;ci++){
       if(!isTranslating)break;
       setStatus('stat2',`[${currentProvider.toUpperCase()}] Đang dịch phần ${ci+1}/${chunks.length}...`,'info');
-      const rb=document.getElementById('rb2');
+    const rb2i=document.getElementById('rb2inner');
       const translated=await callAI(chunks[ci],src,tgt,tone2,(partial)=>{
-        rb.innerHTML='';const div=document.createElement('div');div.className='result-segment';div.textContent=results.join('\n\n')+(results.length?'\n\n':'')+partial;rb.appendChild(div);
-        document.getElementById('res2').style.display='block';rb.scrollTop=rb.scrollHeight;
+        if(rb2i){rb2i.innerHTML=(results.join('\n\n')+(results.length?'\n\n':'')+partial).replace(/\n/g,'<br>');}
+        document.getElementById('res2').style.display='block';if(rb2i)rb2i.scrollIntoView({block:'end'});
       });
       results.push(translated);if(ci<chunks.length-1)await delay(200);
     }
     result2=results.join('\n\n');
     result2Segments=[{type:'text',text:result2}];
-    const rb=document.getElementById('rb2');rb.innerHTML='';
-    const div=document.createElement('div');div.className='result-segment';div.textContent=result2;rb.appendChild(div);
-    // Apply highlights
-    setTimeout(()=>applyDictHighlight(rb),100);
+    const inner2=document.getElementById('rb2inner');
+    if(inner2){inner2.innerHTML=result2.replace(/\n/g,'<br>');inner2.contentEditable='false';}
+  // Apply highlights
+    const rb2container=document.getElementById('rb2');
+    setTimeout(()=>applyDictHighlight(rb2container),100);
     document.getElementById('wc2').textContent=wordCount(result2)+' từ · '+result2.length.toLocaleString()+' ký tự';
     document.getElementById('res2').style.display='block';
-    document.getElementById('retranslateBtn').className='retranslate-btn show';
+    const rBtn=document.getElementById('retranslateBtn');
+if(rBtn){rBtn.style.display='flex';}
     if(isTranslating){
       setStatus('stat2','✅ Dịch xong!','success');
       if(document.getElementById('optSaveHistory')?.checked!==false)saveHistory(text.slice(0,120),result2.slice(0,120),src==='auto'?'Tự động':src,tgt,text,result2);
@@ -2776,7 +3045,72 @@ function clearAllData(){if(!confirm('Xóa toàn bộ?'))return;['claude','openai
 function wordCount(s){return s.trim().split(/\s+/).filter(Boolean).length;}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function toast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className='toast'+(type?' '+type:'');el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2800);}
+/* ══ RICH TEXT EDITOR FOR RESULT ══ */
+let editModeActive=false;
 
+function toggleEditMode(on){
+  editModeActive=on;
+  const inner=document.getElementById('rb2inner');
+  const toolbar=document.getElementById('editToolbar');
+  const editBtn=document.getElementById('editModeBtn');
+  if(!inner||!toolbar){toast('Lỗi: không tìm thấy editor','error');return;}
+  if(on){
+    if(!result2){toast('Chưa có kết quả dịch để sửa','warning');return;}
+    // Hiện toolbar TRƯỚC
+    toolbar.style.removeProperty('display');
+    toolbar.style.display='flex';
+    // Set nội dung
+    inner.innerHTML=result2.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    inner.contentEditable='true';
+    inner.style.background='#fffef0';
+    inner.style.borderLeft='3px solid #d97706';
+    if(editBtn)editBtn.style.display='none';
+    setTimeout(()=>inner.focus(),50);
+    toast('✏️ Chế độ sửa – bôi đen chữ rồi định dạng','info');
+  } else {
+    toolbar.style.display='none';
+    inner.contentEditable='false';
+    inner.style.background='';
+    inner.style.borderLeft='';
+    if(editBtn)editBtn.style.display='flex';
+  }
+}
+function execCmd(cmd){
+  document.getElementById('rb2inner').focus();
+  document.execCommand(cmd,false,null);
+}
+function execHighlight(color){
+  document.getElementById('rb2inner').focus();
+  document.execCommand('hiliteColor',false,color);
+}
+function execFontColor(color){
+  document.getElementById('rb2inner').focus();
+  document.execCommand('foreColor',false,color);
+}
+function saveEditedResult(){
+  const inner=document.getElementById('rb2inner');
+  // Lấy plain text để lưu vào result2
+  result2=inner.innerText||inner.textContent||'';
+  toggleEditMode(false);
+  toast('✅ Đã lưu chỉnh sửa!','success');
+  // Cập nhật word count
+  document.getElementById('wc2').textContent=wordCount(result2)+' từ · '+result2.length.toLocaleString()+' ký tự';
+}
+
+/* ══ RETRY TRANSLATION ══ */
+function retryTranslation(){
+  if(isTranslating){toast('Đang dịch, vui lòng chờ...','warning');return;}
+  const text=document.getElementById('textIn').value.trim();
+  if(!text){toast('Không có văn bản để thử lại','error');return;}
+  result2='';
+  const inner=document.getElementById('rb2inner');
+  if(inner)inner.innerHTML='';
+  if(editModeActive)toggleEditMode(false);
+  document.getElementById('res2').style.display='none';
+  setStatus('stat2','','');
+  setTimeout(()=>doTranslateText(),100);
+  toast('🔁 Đang dịch lại...','info');
+}
 init();
 </script>
 </body>
