@@ -6109,8 +6109,8 @@ const $=id=>document.getElementById(id);
 $('dropZone').insertAdjacentHTML('beforebegin',`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs)">
   <span style="font-size:12px;font-weight:700;color:#1d4ed8;white-space:nowrap">🔍 OCR chữ trong hình/sơ đồ (PDF):</span>
   <select id="pdfImgOcr" style="padding:6px 10px;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs);font-size:12px;outline:none;background:#fff">
+     <option value="all">Mọi trang (chậm hơn, dùng khi sơ đồ là vector)</option>
     <option value="img" selected>Chỉ trang có ảnh (khuyên dùng)</option>
-    <option value="all">Mọi trang (chậm hơn, dùng khi sơ đồ là vector)</option>
     <option value="off">Tắt</option>
   </select>
 </div>`);
