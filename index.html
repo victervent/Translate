@@ -585,6 +585,57 @@ html.dark .app-header,html.dark .app canvas,html.dark .app img{filter:invert(1) 
 .ai-pill{padding:7px 14px}
 .ai-pill .ai-name{font-size:11.5px}
 @media(max-width:640px){.header-title{margin-bottom:20px}.ai-pill{padding:6px 11px}}
+/* ═══ KHO LƯU TRỮ ═══ */
+.vt-hero{background:linear-gradient(135deg,#ede9fe,#e0f2fe);border:1.5px solid #c4b5fd;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px}
+.vt-hero h3{font-size:14px;font-weight:800;color:var(--purple-dark);margin-bottom:4px}
+.vt-hero p{font-size:12.5px;color:var(--gray-600);line-height:1.6}
+.vt-drop{padding:22px 16px}
+.vt-drop .icon{font-size:30px}
+.vt-pending{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.vt-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border-radius:99px;background:var(--purple-light);border:1px solid #ddd6fe;font-size:11.5px;font-weight:600;color:var(--purple-dark);max-width:100%}
+.vt-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+.vt-chip button{border:none;background:none;cursor:pointer;color:var(--gray-400);font-size:13px;padding:0 3px}
+.vt-chip button:hover{color:var(--red)}
+.vt-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.vt-form input,.vt-bar input,.vt-bar select{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:13px;color:var(--gray-800);background:#fff;outline:none}
+.vt-bar{display:grid;grid-template-columns:1fr 140px 140px;gap:8px;margin:20px 0 8px}
+.vt-sub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.vt-sub .sp{flex:1}
+.vt-sub .action-btn{padding:5px 10px;font-size:11.5px}
+.vt-usage{font-size:11.5px;color:var(--gray-400)}
+.vt-list{display:flex;flex-direction:column;gap:8px;max-height:640px;overflow-y:auto;padding-right:2px}
+.vt-empty{text-align:center;padding:44px 20px;color:var(--gray-400);font-size:13px}
+.vt-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);transition:border-color .2s,box-shadow .2s}
+.vt-item:hover{border-color:#c4b5fd;box-shadow:var(--shadow-sm)}
+.vt-item.pin{border-left:4px solid var(--purple)}
+.vt-item.sel{background:#faf5ff;border-color:var(--purple)}
+.vt-chk input{width:16px;height:16px;cursor:pointer;accent-color:var(--purple-dark)}
+.vt-thumb{width:56px;height:56px;flex-shrink:0;border-radius:10px;background:var(--gray-100);display:grid;place-items:center;font-size:26px;overflow:hidden}
+.vt-thumb img{width:100%;height:100%;object-fit:cover}
+.vt-main{flex:1;min-width:0}
+.vt-title{font-size:14px;font-weight:700;color:var(--gray-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vt-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:3px;font-size:11px;color:var(--gray-400)}
+.vt-kind{font-weight:700;color:var(--purple-dark);background:var(--purple-light);padding:1px 8px;border-radius:99px}
+.vt-note{margin-top:4px;font-size:12px;color:var(--gray-600);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vt-link{display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--blue);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vt-link:hover{text-decoration:underline}
+.vt-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.vt-tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--gray-100);color:var(--gray-600);cursor:pointer;border:none}
+.vt-tag:hover{background:var(--purple-light);color:var(--purple-dark)}
+.vt-acts{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.vt-acts button{border:1.5px solid var(--gray-200);background:#fff;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:13px;transition:all .15s}
+.vt-acts button:hover{border-color:var(--purple);background:var(--purple-light)}
+.vt-acts button.del:hover{border-color:var(--red);background:#fef2f2}
+.vt-acts .vt-go{width:auto;padding:0 12px;font-size:12px;font-weight:700;color:#fff;border:none;background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+.vt-acts .vt-go:hover{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+.tts-modal .vt-form{grid-template-columns:1fr;margin:0 0 16px}
+.tts-modal .vt-form input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:13px;outline:none}
+@media(max-width:640px){
+  .vt-form,.vt-bar{grid-template-columns:1fr}
+  .vt-item{flex-wrap:wrap}
+  .vt-main{flex-basis:calc(100% - 100px)}
+  .vt-acts{width:100%;justify-content:flex-end}
+}
 </style>
 </head>
 <body>
@@ -893,7 +944,7 @@ html.dark .app-header,html.dark .app canvas,html.dark .app img{filter:invert(1) 
 <div id="panel-image" class="panel">
   <div style="background:linear-gradient(135deg,#f0f9ff,#ede9fe);border:1.5px solid #bfdbfe;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
     <h3 style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:5px">🖼️ Dịch từ hình ảnh (OCR + AI)</h3>
-    <p style="font-size:12.5px;color:var(--gray-600)">Upload nhiều ảnh chứa văn bản. Claude API: OCR + dịch chính xác. Free: dùng Tesseract OCR + Google Translate (không cần API key).</p>
+    <p style="font-size:12.5px;color:var(--gray-600)">Upload nhiều ảnh chứa văn bản.</p>
   </div>
   <div class="lang-bar" style="margin-bottom:12px">
     <div><div class="field-label">Từ ngôn ngữ</div>
@@ -4730,7 +4781,7 @@ renderImgQueue=function(){_riq();decorateImgQueue();};
   if(!tabs||document.getElementById('ctxHint'))return;
   tabs.insertAdjacentHTML('beforebegin',`<div style="margin-bottom:14px;padding:10px 12px;background:#f0f9ff;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#1d4ed8;margin-bottom:6px">🧠 Ngữ cảnh / chủ đề (giúp AI dịch đúng thuật ngữ)</div>
-    <input type="text" id="ctxHint" placeholder="VD: Bài giảng kinh tế vi mô · Hợp đồng thương mại · Tiểu thuyết fantasy (xưng hô anh–em)" style="width:100%;padding:8px 11px;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs);font-size:13px;outline:none;background:#fff">
+    <input type="text" id="ctxHint" placeholder="VD: Bài giảng kinh tế vi mô - Hợp đồng thương mại - Tiểu thuyết fantasy " style="width:100%;padding:8px 11px;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs);font-size:13px;outline:none;background:#fff">
   </div>`);
 })();
 
@@ -4996,6 +5047,1059 @@ document.addEventListener('pointerdown',e=>{
   // đèn pha chạy theo con trỏ
   const app=document.querySelector('.app');
   app.addEventListener('mousemove',e=>{const r=app.getBoundingClientRect();app.style.setProperty('--mx',(e.clientX-r.left)+'px');app.style.setProperty('--my',(e.clientY-r.top)+'px');});
+})();
+/* ═══ KHO LƯU TRỮ (IndexedDB) ═══ */
+(function(){
+if(document.getElementById('panel-vault'))return;
+const DB='niggest_vault',ST='items';
+let db=null,items=[],visible=[],sel=new Set(),pending=[],urls=[],editId=null;
+const $=id=>document.getElementById(id);
+const esc=s=>escHtml(s==null?'':s).replace(/"/g,'&quot;');
+const uid=()=>'v'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fmt=n=>n>=1073741824?(n/1073741824).toFixed(1)+' GB':n>=1048576?(n/1048576).toFixed(1)+' MB':n>=1024?Math.round(n/1024)+' KB':n+' B';
+const KIND={pdf:['📕','PDF'],word:['📘','Word'],pptx:['📊','PPTX'],txt:['📝','TXT'],image:['🖼️','Ảnh'],link:['🔗','Link'],other:['📎','Khác']};
+const TRANS=['pdf','word','txt','image','pptx'];
+const kindOf=(name,mime)=>{
+  const e=(name.split('.').pop()||'').toLowerCase();
+  if(e==='pdf')return'pdf';
+  if(e==='docx'||e==='doc')return'word';
+  if(e==='pptx')return'pptx';
+  if(e==='txt')return'txt';
+  if((mime||'').startsWith('image/'))return'image';
+  return'other';
+};
+const normLink=l=>{l=(l||'').trim();return l?(/^https?:\/\//i.test(l)?l:'https://'+l):'';};
+const hostOf=l=>{try{return new URL(l).hostname.replace(/^www\./,'');}catch(e){return l;}};
+const parseTags=s=>(s||'').split(/[,;]+/).map(t=>t.trim()).filter(Boolean);
+const toFile=i=>new File([i.blob],i.name||i.title,{type:i.type||''});
+function saveAs(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);}
+
+/* ── IndexedDB ── */
+function openDb(){return new Promise((res,rej)=>{
+  if(db)return res(db);
+  if(!window.indexedDB)return rej(new Error('Trình duyệt không hỗ trợ lưu trữ (chế độ ẩn danh?)'));
+  const r=indexedDB.open(DB,1);
+  r.onupgradeneeded=()=>r.result.createObjectStore(ST,{keyPath:'id'});
+  r.onsuccess=()=>{db=r.result;res(db);};
+  r.onerror=()=>rej(r.error);
+});}
+function tx(mode,fn){return openDb().then(d=>new Promise((res,rej)=>{
+  const t=d.transaction(ST,mode),rq=fn(t.objectStore(ST));
+  t.oncomplete=()=>res(rq&&rq.result);
+  t.onerror=t.onabort=()=>rej(t.error||new Error('Lỗi lưu trữ (có thể hết dung lượng)'));
+}));}
+const dbAll=()=>tx('readonly',s=>s.getAll());
+const dbPut=o=>tx('readwrite',s=>s.put(o));
+const dbDel=id=>tx('readwrite',s=>s.delete(id));
+async function reload(){items=await dbAll()||[];render();usage();}
+
+/* ── Giao diện ── */
+document.querySelector('.tabs').insertAdjacentHTML('beforeend','<button class="tab-btn" onclick="switchTab(\'vault\',this)">🗄️ Kho</button>');
+$('panel-settings').insertAdjacentHTML('afterend',`<div id="panel-vault" class="panel">
+  <div class="vt-hero"><h3>🗄️ Kho lưu trữ tài liệu</h3><p>Cất PDF, Word, PowerPoint, ảnh... kèm tiêu đề, link, ghi chú, thẻ. Khi cần, bấm dịch để đưa thẳng sang tab tương ứng. Dữ liệu lưu ngay trên trình duyệt này.</p></div>
+  <div class="upload-zone vt-drop" id="vtDrop"><span class="icon">🗄️</span><p>Kéo thả hoặc <strong>nhấn để chọn</strong> nhiều tệp</p><small>PDF · Word · PPTX · Ảnh · TXT · tệp khác</small></div>
+  <input type="file" id="vtFile" multiple style="display:none">
+  <div class="vt-pending" id="vtPending"></div>
+  <div class="vt-form">
+    <input type="text" id="vtTitle" placeholder="Tiêu đề (trống = lấy tên tệp)">
+    <input type="text" id="vtLink" placeholder="Link liên quan (tuỳ chọn)">
+    <input type="text" id="vtTags" placeholder="Thẻ: hợp đồng, kinh tế, ...">
+    <input type="text" id="vtNote" placeholder="Ghi chú">
+  </div>
+  <button class="primary-btn" id="vtSave">💾 Lưu vào kho</button>
+  <div class="vt-bar">
+    <input type="text" id="vtSearch" placeholder="🔍 Tìm theo tiêu đề, ghi chú, thẻ, link...">
+    <select id="vtFilter"><option value="all">Tất cả loại</option><option value="pdf">📕 PDF</option><option value="word">📘 Word</option><option value="pptx">📊 PPTX</option><option value="image">🖼️ Ảnh</option><option value="txt">📝 TXT</option><option value="link">🔗 Link</option><option value="other">📎 Khác</option></select>
+    <select id="vtSort"><option value="new">Mới nhất</option><option value="name">Tên A→Z</option><option value="size">Dung lượng</option></select>
+  </div>
+  <div class="vt-sub">
+    <span class="vt-usage" id="vtUsage"></span><span class="sp"></span>
+    <button class="action-btn" id="vtAll">☑ Chọn tất cả</button>
+    <button class="action-btn" id="vtNone">Bỏ chọn</button>
+    <button class="action-btn green" id="vtSendSel">🌐 Dịch đã chọn</button>
+    <button class="action-btn danger" id="vtDelSel">🗑️ Xóa đã chọn</button>
+    <button class="action-btn" id="vtExport">📤 Sao lưu</button>
+    <label class="action-btn" style="cursor:pointer">📥 Khôi phục<input type="file" id="vtImport" accept=".zip" style="display:none"></label>
+  </div>
+  <div class="vt-list" id="vtList"></div>
+</div>`);
+document.body.insertAdjacentHTML('beforeend',`<div class="tts-modal-overlay" id="vtModal"><div class="tts-modal">
+  <h3>✏️ Sửa mục</h3><p id="vtMFile"></p>
+  <div class="vt-form">
+    <input type="text" id="vtMTitle" placeholder="Tiêu đề">
+    <input type="text" id="vtMLink" placeholder="Link liên quan">
+    <input type="text" id="vtMTags" placeholder="Thẻ, cách nhau dấu phẩy">
+    <input type="text" id="vtMNote" placeholder="Ghi chú">
+  </div>
+  <div class="tts-modal-btns"><button class="tts-cancel-btn" id="vtMCancel">Hủy</button><button class="tts-start-btn" id="vtMSave">Lưu</button></div>
+</div></div>`);
+
+/* ── Danh sách ── */
+function render(){
+  urls.forEach(u=>URL.revokeObjectURL(u));urls=[];
+  const q=$('vtSearch').value.trim().toLowerCase(),f=$('vtFilter').value,so=$('vtSort').value;
+  visible=items.filter(i=>(f==='all'||i.kind===f)&&(!q||[i.title,i.note,i.link,i.name,(i.tags||[]).join(' ')].join(' ').toLowerCase().includes(q)));
+  visible.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||(so==='name'?a.title.localeCompare(b.title,'vi'):so==='size'?(b.size||0)-(a.size||0):b.ts-a.ts));
+  const el=$('vtList');
+  if(!visible.length){el.innerHTML=`<div class="vt-empty">${items.length?'🔍 Không có mục nào khớp.':'📭 Kho đang trống. Thêm tệp hoặc link ở phía trên.'}</div>`;updSel();return;}
+  el.innerHTML=visible.map(i=>{
+    const k=KIND[i.kind]||KIND.other;
+    let thumb=k[0];
+    if(i.kind==='image'&&i.blob){const u=URL.createObjectURL(i.blob);urls.push(u);thumb=`<img src="${u}" alt="">`;}
+    const can=i.blob&&TRANS.includes(i.kind);
+    return`<div class="vt-item${i.pin?' pin':''}${sel.has(i.id)?' sel':''}" data-id="${i.id}">
+      <label class="vt-chk"><input type="checkbox" data-a="sel" ${sel.has(i.id)?'checked':''}></label>
+      <div class="vt-thumb">${thumb}</div>
+      <div class="vt-main">
+        <div class="vt-title" title="${esc(i.title)}">${i.pin?'📌 ':''}${esc(i.title)}</div>
+        <div class="vt-meta"><span class="vt-kind">${k[0]} ${k[1]}</span>${i.size?`<span>${fmt(i.size)}</span>`:''}<span>${new Date(i.ts).toLocaleDateString('vi-VN')}</span>${i.name&&i.name!==i.title?`<span title="${esc(i.name)}">${esc(i.name.length>28?i.name.slice(0,26)+'…':i.name)}</span>`:''}</div>
+        ${i.note?`<div class="vt-note">${esc(i.note)}</div>`:''}
+        ${i.link?`<a class="vt-link" href="${esc(i.link)}" target="_blank" rel="noopener">🔗 ${esc(hostOf(i.link))}</a>`:''}
+        ${(i.tags||[]).length?`<div class="vt-tags">${i.tags.map(t=>`<button class="vt-tag" data-a="tag" data-t="${esc(t)}">#${esc(t)}</button>`).join('')}</div>`:''}
+      </div>
+      <div class="vt-acts">
+        ${can?'<button class="vt-go" data-a="go" title="Đưa sang tab dịch">🌐 Dịch</button>':''}
+        ${i.link&&!i.blob?'<button data-a="open" title="Mở link">↗</button>':''}
+        ${i.blob?'<button data-a="dl" title="Tải về">⬇</button>':''}
+        <button data-a="pin" title="${i.pin?'Bỏ ghim':'Ghim'}">${i.pin?'📍':'📌'}</button>
+        <button data-a="edit" title="Sửa">✏️</button>
+        <button class="del" data-a="del" title="Xóa">🗑️</button>
+      </div></div>`;
+  }).join('');
+  updSel();
+}
+function updSel(){
+  sel.forEach(id=>{if(!items.some(i=>i.id===id))sel.delete(id);});
+  const n=sel.size;
+  $('vtSendSel').textContent=n?`🌐 Dịch đã chọn (${n})`:'🌐 Dịch đã chọn';
+  $('vtDelSel').textContent=n?`🗑️ Xóa đã chọn (${n})`:'🗑️ Xóa đã chọn';
+}
+async function usage(){
+  const total=items.reduce((a,i)=>a+(i.size||0),0);
+  let extra='';
+  try{const e=await navigator.storage.estimate();if(e.quota)extra=' · còn dùng được ~'+fmt(Math.max(0,e.quota-(e.usage||0)));}catch(e){}
+  $('vtUsage').textContent=items.length+' mục · '+fmt(total)+extra;
+}
+
+/* ── Thêm vào kho ── */
+function renderPending(){
+  $('vtPending').innerHTML=pending.map((f,i)=>`<span class="vt-chip"><span>${esc(f.name)} · ${fmt(f.size)}</span><button data-i="${i}">✕</button></span>`).join('');
+}
+function addPending(list){pending.push(...[...list]);renderPending();}
+const drop=$('vtDrop');
+drop.onclick=()=>$('vtFile').click();
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over');});
+drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files.length)addPending(e.dataTransfer.files);});
+$('vtFile').onchange=e=>{addPending(e.target.files);e.target.value='';};
+$('vtPending').onclick=e=>{const b=e.target.closest('button[data-i]');if(!b)return;pending.splice(+b.dataset.i,1);renderPending();};
+
+$('vtSave').onclick=async()=>{
+  const link=normLink($('vtLink').value),title=$('vtTitle').value.trim(),note=$('vtNote').value.trim(),tags=parseTags($('vtTags').value);
+  if(!pending.length&&!link)return toast('Chọn tệp hoặc nhập link trước đã','error');
+  const btn=$('vtSave');btn.disabled=true;btn.textContent='⏳ Đang lưu...';
+  try{
+    if(pending.length){
+      for(const f of pending){
+        const base=f.name.replace(/\.[^.]+$/,'');
+        const t=title?(pending.length>1?title+' – '+base:title):base;
+        const blob=new Blob([await f.arrayBuffer()],{type:f.type});
+        await dbPut({id:uid(),title:t,link,note,tags,name:f.name,type:f.type,kind:kindOf(f.name,f.type),size:f.size,ts:Date.now(),pin:false,blob});
+      }
+    }else{
+      await dbPut({id:uid(),title:title||hostOf(link),link,note,tags,name:'',type:'',kind:'link',size:0,ts:Date.now(),pin:false,blob:null});
+    }
+    toast('✅ Đã lưu '+(pending.length||1)+' mục vào kho','success');
+    pending=[];renderPending();
+    ['vtTitle','vtLink','vtTags','vtNote'].forEach(id=>$(id).value='');
+    try{navigator.storage.persist&&navigator.storage.persist();}catch(e){}
+    await reload();
+  }catch(e){toast('❌ '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='💾 Lưu vào kho';}
+};
+
+/* ── Đưa sang tab dịch ── */
+function send(list){
+  const docs=[],imgs=[],ppt=[];
+  list.forEach(i=>{
+    if(!i.blob)return;
+    const f=toFile(i);
+    if(['pdf','word','txt'].includes(i.kind))docs.push(f);
+    else if(i.kind==='image')imgs.push(f);
+    else if(i.kind==='pptx')ppt.push(f);
+  });
+  if(!docs.length&&!imgs.length&&!ppt.length)return toast('Không có tệp nào dịch được trong lựa chọn','error');
+  const tabs=document.querySelectorAll('.tab-btn'),msg=[];
+  if(docs.length){addFiles(docs);msg.push(docs.length+' tài liệu');}
+  if(imgs.length){handleImageFiles(imgs);msg.push(imgs.length+' ảnh');}
+  if(ppt.length){handlePptxFile(ppt[0]);msg.push('1 PPTX');}
+  const [id,idx]=docs.length?['file',0]:ppt.length?['pptx',3]:['image',2];
+  switchTab(id,tabs[idx]);
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('🌐 Đã gửi '+msg.join(' + ')+(ppt.length>1?' (PPTX chỉ dịch từng file một, đã lấy file đầu)':'')+', bấm "Bắt đầu dịch"','success');
+}
+
+/* ── Thao tác từng mục ── */
+$('vtList').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const card=b.closest('[data-id]'),id=card&&card.dataset.id,it=items.find(x=>x.id===id),a=b.dataset.a;
+  if(a==='tag'){$('vtSearch').value=b.dataset.t;render();return;}
+  if(!it)return;
+  if(a==='sel'){b.checked?sel.add(id):sel.delete(id);card.classList.toggle('sel',b.checked);updSel();}
+  else if(a==='go')send([it]);
+  else if(a==='open')window.open(it.link,'_blank','noopener');
+  else if(a==='dl')saveAs(it.blob,it.name||it.title);
+  else if(a==='pin'){it.pin=!it.pin;await dbPut(it);render();}
+  else if(a==='edit')openEdit(id);
+  else if(a==='del'){
+    if(!confirm('Xóa "'+it.title+'" khỏi kho?'))return;
+    await dbDel(id);sel.delete(id);await reload();toast('🗑️ Đã xóa','info');
+  }
+});
+['vtSearch','vtFilter','vtSort'].forEach(id=>$(id).addEventListener('input',render));
+$('vtAll').onclick=()=>{visible.forEach(i=>sel.add(i.id));render();};
+$('vtNone').onclick=()=>{sel.clear();render();};
+$('vtSendSel').onclick=()=>{if(!sel.size)return toast('Tick chọn ít nhất 1 mục','error');send(items.filter(i=>sel.has(i.id)));};
+$('vtDelSel').onclick=async()=>{
+  if(!sel.size)return toast('Tick chọn ít nhất 1 mục','error');
+  if(!confirm('Xóa '+sel.size+' mục đã chọn?'))return;
+  for(const id of [...sel])await dbDel(id);
+  sel.clear();await reload();toast('🗑️ Đã xóa','info');
+};
+
+/* ── Sửa mục ── */
+function openEdit(id){
+  const i=items.find(x=>x.id===id);if(!i)return;editId=id;
+  $('vtMFile').textContent=i.name?'📎 '+i.name:'🔗 Mục chỉ có link';
+  $('vtMTitle').value=i.title;$('vtMLink').value=i.link||'';$('vtMTags').value=(i.tags||[]).join(', ');$('vtMNote').value=i.note||'';
+  $('vtModal').classList.add('show');
+}
+$('vtMCancel').onclick=()=>$('vtModal').classList.remove('show');
+$('vtMSave').onclick=async()=>{
+  const i=items.find(x=>x.id===editId);if(!i)return;
+  const title=$('vtMTitle').value.trim(),link=normLink($('vtMLink').value);
+  if(!title)return toast('Tiêu đề không được để trống','error');
+  if(!i.blob&&!link)return toast('Mục chỉ có link thì phải có link','error');
+  Object.assign(i,{title,link,tags:parseTags($('vtMTags').value),note:$('vtMNote').value.trim()});
+  await dbPut(i);$('vtModal').classList.remove('show');render();toast('✅ Đã cập nhật','success');
+};
+
+/* ── Sao lưu / khôi phục (.zip) ── */
+$('vtExport').onclick=async()=>{
+  if(!items.length)return toast('Kho đang trống','error');
+  toast('⏳ Đang tạo file sao lưu...','info');
+  try{
+    const z=new JSZip();
+    z.file('meta.json',JSON.stringify(items.map(({blob,...m})=>m)));
+    items.forEach(i=>{if(i.blob)z.file('files/'+i.id,i.blob);});
+    saveAs(await z.generateAsync({type:'blob',compression:'STORE'}),'kho-luu-tru-'+Date.now()+'.zip');
+    toast('📤 Đã xuất '+items.length+' mục','success');
+  }catch(e){toast('❌ '+e.message,'error');}
+};
+$('vtImport').onchange=async e=>{
+  const file=e.target.files[0];e.target.value='';if(!file)return;
+  try{
+    const z=await JSZip.loadAsync(file),mf=z.file('meta.json');
+    if(!mf)throw new Error('Không phải file sao lưu của kho');
+    const meta=JSON.parse(await mf.async('string'));let n=0;
+    for(const m of meta){
+      if(items.some(x=>x.id===m.id))continue;
+      const zf=z.file('files/'+m.id);
+      const blob=zf?new Blob([await zf.async('arraybuffer')],{type:m.type||''}):null;
+      await dbPut({...m,blob});n++;
+    }
+    await reload();toast('📥 Đã khôi phục '+n+' mục','success');
+  }catch(err){toast('❌ '+err.message,'error');}
+};
+
+/* ── Gắn vào hệ thống tab ── */
+const _sw=switchTab;
+switchTab=function(id,btn){_sw(id,btn);if(id==='vault'){render();usage();}};
+reload().catch(e=>console.warn('Kho:',e.message));
+})();
+/* ═══════════ FIX TAB + EXCEL + EPUB ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+
+/* ── 1. CSS: sửa tab + style cho Excel/EPUB ── */
+document.head.insertAdjacentHTML('beforeend',`<style>
+.tabs{display:flex;flex-wrap:wrap;gap:3px;overflow:visible}
+.tabs .tab-ind{display:none!important}
+.tab-btn{flex:1 1 auto;min-width:0;padding:9px 12px;white-space:nowrap}
+.tool-hero{border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px}
+.tool-hero h3{font-size:14px;font-weight:800;margin-bottom:5px}
+.tool-hero p{font-size:12.5px;color:var(--gray-600);line-height:1.6}
+.tool-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;padding:10px 12px;border-radius:var(--radius-xs)}
+.tool-opts label{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer}
+.tool-opts input[type=text]{flex:1;padding:7px 10px;border-radius:var(--radius-xs);font-size:12px;outline:none;border:1.5px solid var(--gray-200)}
+.tool-info{margin-top:10px}
+.pair-tbl th{position:sticky;top:0;background:var(--gray-50);text-align:left;padding:7px 10px;font-size:11px;text-transform:uppercase;color:var(--gray-500);border-bottom:1px solid var(--gray-200)}
+.pair-tbl td{padding:7px 10px;border-bottom:1px solid var(--gray-100);vertical-align:top;white-space:pre-wrap;word-break:break-word;width:50%}
+.pair-tbl td:last-child{color:#166534;background:#f0fdf4}
+@media(max-width:640px){.tool-opts{grid-template-columns:1fr}.tab-btn{padding:8px 8px;font-size:10px}}
+</style>`);
+
+/* ── 2. Thêm tab + sắp xếp thứ tự hiển thị (không đổi thứ tự DOM nên các nút khác vẫn chạy đúng) ── */
+const tabsEl=document.querySelector('.tabs');
+tabsEl.insertAdjacentHTML('beforeend',`<button class="tab-btn" onclick="switchTab('excel',this)">📗 Excel</button><button class="tab-btn" onclick="switchTab('epub',this)">📚 EPUB</button>`);
+const ORD={file:0,text:1,image:2,pptx:3,excel:4,epub:5,vault:6,history:7,settings:8};
+tabsEl.querySelectorAll('.tab-btn').forEach(b=>{
+  const m=(b.getAttribute('onclick')||'').match(/switchTab\('(\w+)'/);
+  if(m&&ORD[m[1]]!==undefined)b.style.order=ORD[m[1]];
+});
+window.goTab=i=>document.querySelectorAll('.tab-btn')[i]?.click(); // code cũ có gọi goTab nhưng chưa được định nghĩa
+
+const LN=Object.keys(LANG_CODES);
+const langOpts=(auto,def)=>(auto?'<option value="auto">🔍 Tự động</option>':'')+LN.map(l=>`<option value="${l}"${l===def?' selected':''}>${l.replace('tiếng ','Tiếng ')}</option>`).join('');
+const langBar=(a,b,sd,td)=>`<div class="lang-bar">
+  <div><div class="field-label">Từ ngôn ngữ</div><select id="${a}">${langOpts(true,sd)}</select></div>
+  <button class="swap-btn" onclick="swapLangs('${a}','${b}')">⇄</button>
+  <div><div class="field-label">Sang ngôn ngữ</div><select id="${b}">${langOpts(false,td)}</select></div></div>`;
+
+$('panel-settings').insertAdjacentHTML('afterend',`
+<div id="panel-excel" class="panel">
+  <div class="tool-hero" style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1.5px solid #6ee7b7">
+    <h3 style="color:#065f46">📗 Dịch Excel (.xlsx / .xlsm)</h3>
+    <p>Dịch trực tiếp trong file: giữ nguyên công thức, định dạng, màu, gộp ô, biểu đồ, bộ lọc. Dịch cả ghi chú (comment), hộp văn bản và tiêu đề biểu đồ.</p>
+  </div>
+  ${langBar('xlSrc','xlTgt','auto','tiếng Việt')}
+  <div class="tool-opts" style="background:#ecfdf5;border:1.5px solid #6ee7b7">
+    <label style="color:#065f46"><input type="checkbox" id="xlBil"> 📖 Song ngữ trong ô (gốc + dòng dịch bên dưới)</label>
+    <label style="color:#065f46"><input type="checkbox" id="xlExtra" checked> 🖼️ Dịch hộp văn bản & tiêu đề biểu đồ</label>
+  </div>
+  <div class="upload-zone" id="xlDrop" style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4)"><span class="icon">📗</span><p>Kéo thả file <strong>.xlsx</strong> vào đây hoặc nhấn để chọn</p><small>File .xls / .csv cũ: mở bằng Excel rồi "Save As" .xlsx</small></div>
+  <input type="file" id="xlFile" accept=".xlsx,.xlsm" style="display:none">
+  <div id="xlInfo" class="tool-info"></div>
+  <div id="xlProgW" style="display:none"><div class="progress-wrap"><div class="progress-bar" id="xlPb" style="width:0%"></div></div></div>
+  <div id="xlStat" class="status-wrap"></div>
+  <div id="xlPrev" style="margin-top:10px"></div>
+  <div id="xlActs" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap">
+    <button class="action-btn green" id="xlDl">📥 Tải Excel đã dịch</button>
+    <button class="action-btn" id="xlCopy">📋 Sao chép bảng đối chiếu</button>
+  </div>
+  <button class="primary-btn free-btn" id="xlBtn" style="display:none">📗 Dịch Excel</button>
+  <div class="note">⚠️ Tên sheet được giữ nguyên (đổi tên sheet sẽ làm hỏng công thức tham chiếu). Ô có chữ in đậm/đổi màu từng đoạn: toàn ô sẽ lấy định dạng của đoạn đầu. Song ngữ cần bật "Wrap text" trong Excel để thấy 2 dòng.</div>
+</div>
+
+<div id="panel-epub" class="panel">
+  <div class="tool-hero" style="background:linear-gradient(135deg,#fdf2f8,#faf5ff);border:1.5px solid #f5d0fe">
+    <h3 style="color:#86198f">📚 Dịch sách điện tử (.epub)</h3>
+    <p>Dịch từng chương, mục lục, tiêu đề sách; giữ nguyên ảnh bìa, hình, CSS, font và cấu trúc sách. Xuất ra file .epub mới đọc được trên Kindle app, Apple Books, Calibre...</p>
+  </div>
+  ${langBar('epSrc','epTgt','auto','tiếng Việt')}
+  <div class="tool-opts" style="background:#fdf4ff;border:1.5px solid #f5d0fe">
+    <label style="color:#86198f"><input type="checkbox" id="epBil"> 📖 Song ngữ (đoạn gốc mờ + đoạn dịch)</label>
+    <label style="color:#86198f"><input type="checkbox" id="epLang" checked> 🌐 Đổi mã ngôn ngữ của sách</label>
+    <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700;color:#86198f;white-space:nowrap">📑 Chương:</span><input type="text" id="epRange" placeholder="VD: 1-5,8 (trống = cả cuốn)"></div>
+  </div>
+  <div class="upload-zone" id="epDrop" style="background:linear-gradient(135deg,#fdf2f8,#faf5ff)"><span class="icon">📚</span><p>Kéo thả file <strong>.epub</strong> vào đây hoặc nhấn để chọn</p><small>Sách có DRM (Kindle/Adobe) không dịch được</small></div>
+  <input type="file" id="epFile" accept=".epub" style="display:none">
+  <div id="epInfo" class="tool-info"></div>
+  <div id="epProgW" style="display:none"><div class="progress-wrap"><div class="progress-bar" id="epPb" style="width:0%"></div></div></div>
+  <div id="epStat" class="status-wrap"></div>
+  <div id="epPrev" style="margin-top:10px"></div>
+  <div id="epActs" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap">
+    <button class="action-btn green" id="epDl">📥 Tải EPUB đã dịch</button>
+    <button class="action-btn" id="epCopy">📋 Sao chép bảng đối chiếu</button>
+  </div>
+  <button class="primary-btn" id="epBtn" style="display:none">📚 Dịch EPUB</button>
+  <div class="note">⚠️ Sách dài + chế độ miễn phí sẽ dịch từng đoạn nên khá chậm, dùng AI có key sẽ nhanh hơn nha.</div>
+</div>`);
+
+/* ── 3. Tiện ích chung ── */
+const clean=s=>String(s).replace(/\s+/g,' ').trim();
+const short=(s,n=400)=>String(s).length>n?String(s).slice(0,n)+'…':String(s);
+const XML_NS='http://www.w3.org/XML/1998/namespace';
+const withDecl=x=>/^<\?xml/.test(x)?x:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+x;
+function saveBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);}
+function bindDrop(zone,input,fn){
+  zone.onclick=()=>input.click();
+  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+  zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('over');if(e.dataTransfer.files[0])fn(e.dataTransfer.files[0]);});
+  input.onchange=e=>{if(e.target.files[0])fn(e.target.files[0]);e.target.value='';};
+}
+function pairsHtml(pairs){
+  const rows=pairs.slice(0,300).map(([a,b])=>`<tr><td>${escHtml(short(a))}</td><td>${escHtml(short(b))}</td></tr>`).join('');
+  return `<div style="max-height:420px;overflow:auto;border:1.5px solid var(--gray-200);border-radius:10px"><table class="pair-tbl" style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr><th>Gốc</th><th>Dịch</th></tr></thead><tbody>${rows}</tbody></table></div>`
+   +(pairs.length>300?`<div style="font-size:11px;color:var(--gray-400);margin-top:6px">Hiển thị 300/${pairs.length} mục (file tải về có đầy đủ)</div>`:'');
+}
+function copyPairs(pairs){navigator.clipboard.writeText(pairs.map(p=>p[0]+'\t'+p[1]).join('\n')).then(()=>toast('✅ Đã sao chép!','success'));}
+async function translateUnits(texts,src,tgt,statId,label,pb){
+  const out=[],N=100;
+  for(let i=0;i<texts.length;i+=N){
+    if(!isTranslating)throw Object.assign(new Error('stop'),{name:'AbortError'});
+    setStatus(statId,`[${currentProvider.toUpperCase()}] ${label}: ${Math.min(i+N,texts.length)}/${texts.length} đoạn...`,'info');
+    $(pb).style.width=Math.round(i/texts.length*100)+'%';
+    out.push(...await translateCellArray(texts.slice(i,i+N),src,tgt,tone1));
+  }
+  $(pb).style.width='100%';
+  return out;
+}
+async function runTool(btn,idle,statId,pbW,pb,fn){
+  if(isTranslating){stopTranslation();return;}
+  autoFallbackFree();
+  isTranslating=true;btn.textContent='⏹️ Dừng dịch';btn.className='primary-btn stop-btn';
+  $(pbW).style.display='block';
+  try{await fn();}
+  catch(e){
+    if(e.name==='AbortError')setStatus(statId,'⏹️ Đã dừng.','warning');
+    else{setStatus(statId,'❌ Lỗi: '+e.message,'error');console.error(e);}
+  }finally{
+    isTranslating=false;btn.textContent=idle;btn.className='primary-btn'+(btn.dataset.free?' free-btn':'');
+    setTimeout(()=>{$(pbW).style.display='none';$(pb).style.width='0%';},800);
+  }
+}
+$('xlBtn').dataset.free='1';
+
+/* ═══════════ EXCEL ═══════════ */
+const X_NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+const XLSX_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const xl={file:null,buf:null,out:null,pairs:[]};
+// các thẻ <t> của 1 chuỗi, bỏ phần phiên âm (rPh)
+function xlTs(el){
+  return Array.from(el.getElementsByTagNameNS(X_NS,'t')).filter(t=>{
+    for(let a=t.parentNode;a&&a!==el;a=a.parentNode)if(a.localName==='rPh')return false;
+    return true;
+  });
+}
+function xlSetText(ts,val){
+  ts[0].textContent=val;ts[0].setAttributeNS(XML_NS,'xml:space','preserve');
+  for(let k=1;k<ts.length;k++)ts[k].textContent='';
+}
+async function xlPick(f){
+  if(!/\.(xlsx|xlsm)$/i.test(f.name))return toast('Chỉ hỗ trợ .xlsx / .xlsm (file .xls cũ hãy Save As sang .xlsx)','error');
+  xl.file=f;xl.out=null;xl.pairs=[];
+  $('xlPrev').innerHTML='';$('xlActs').style.display='none';setStatus('xlStat','','');
+  try{
+    xl.buf=await f.arrayBuffer();
+    const z=await JSZip.loadAsync(xl.buf);
+    let sheets=[],n=0;
+    const wb=z.file('xl/workbook.xml');
+    if(wb){const d=new DOMParser().parseFromString(await wb.async('string'),'application/xml');sheets=[...d.getElementsByTagNameNS('*','sheet')].map(s=>s.getAttribute('name'));}
+    const ss=z.file('xl/sharedStrings.xml');
+    if(ss){const m=(await ss.async('string')).match(/<si[\s>]/g);n=m?m.length:0;}
+    $('xlInfo').innerHTML=`<div class="file-row"><span class="file-icon">📗</span><div class="file-info"><div class="file-name">${escHtml(f.name)}</div><div class="file-meta">${(f.size/1024).toFixed(1)} KB · ${sheets.length} sheet (${escHtml(sheets.slice(0,6).join(', '))}${sheets.length>6?'…':''}) · ~${n} chuỗi văn bản</div></div></div>`;
+    $('xlBtn').style.display='flex';
+  }catch(e){toast('❌ Không đọc được file: '+e.message,'error');}
+}
+async function xlRun(){
+  if(!xl.buf)return toast('Chưa chọn file Excel','error');
+  const src=$('xlSrc').value,tgt=$('xlTgt').value,bil=$('xlBil').checked,extra=$('xlExtra').checked;
+  setStatus('xlStat','📂 Đang phân tích file...','info');
+  const zip=await JSZip.loadAsync(xl.buf);
+  const names=Object.keys(zip.files).filter(n=>
+    /^xl\/(sharedStrings\.xml|comments\d*\.xml|worksheets\/sheet\d+\.xml)$/.test(n)||
+    (extra&&/^xl\/(drawings\/drawing\d+|charts\/chart\d+)\.xml$/.test(n)));
+  const docs=[],units=[],texts=[];
+  for(const name of names){
+    const xml=await zip.files[name].async('string');
+    const isSheet=/worksheets\//.test(name),isDraw=/(drawings|charts)\//.test(name);
+    if(isSheet&&!xml.includes('<is>'))continue;           // chỉ xử lý sheet có inline string
+    const dom=new DOMParser().parseFromString(xml,'application/xml');
+    if(dom.getElementsByTagName('parsererror').length)continue;
+    docs.push({name,dom});
+    if(isDraw){
+      Array.from(dom.getElementsByTagNameNS(A_NS,'p')).forEach(p=>{
+        const segs=pptxSegments(p);if(!segs.length)return;
+        units.push({draw:true,p,start:texts.length,count:segs.length});
+        segs.forEach(s=>texts.push(s.map(t=>t.textContent).join('')));
+      });
+    }else{
+      const tag=/sharedStrings/.test(name)?'si':isSheet?'is':'text';
+      Array.from(dom.getElementsByTagNameNS(X_NS,tag)).forEach(el=>{
+        const ts=xlTs(el);if(!ts.length)return;
+        const s=ts.map(t=>t.textContent).join('');
+        if(!/\p{L}/u.test(s))return;
+        units.push({ts,start:texts.length,count:1});texts.push(s);
+      });
+    }
+  }
+  if(!texts.length)throw new Error('Không tìm thấy chữ để dịch trong file');
+  const out=await translateUnits(texts,src,tgt,'xlStat','Đang dịch','xlPb');
+  const pairs=[];
+  units.forEach(u=>{
+    const origs=texts.slice(u.start,u.start+u.count);
+    const trs=out.slice(u.start,u.start+u.count).map((t,i)=>(t&&t.trim())?t.trim():origs[i]);
+    if(u.draw)pptxApply(u.p,trs);
+    else{
+      const o=origs[0],t=trs[0];
+      xlSetText(u.ts,(bil&&t!==o.trim())?o+'\n'+t:t);
+    }
+    pairs.push([origs.join(' / '),trs.join(' / ')]);
+  });
+  docs.forEach(d=>zip.file(d.name,withDecl(new XMLSerializer().serializeToString(d.dom))));
+  xl.out=await zip.generateAsync({type:'blob',mimeType:XLSX_MIME,compression:'DEFLATE'});
+  xl.pairs=pairs;
+  $('xlPrev').innerHTML=pairsHtml(pairs);
+  $('xlActs').style.display='flex';
+  updateStats(texts.join('').length);
+  setStatus('xlStat',`✅ Dịch xong ${pairs.length} mục! Bấm "Tải Excel đã dịch".`,'success');
+}
+bindDrop($('xlDrop'),$('xlFile'),xlPick);
+$('xlBtn').onclick=()=>runTool($('xlBtn'),'📗 Dịch Excel','xlStat','xlProgW','xlPb',xlRun);
+$('xlDl').onclick=()=>{
+  if(!xl.out)return toast('Chưa có bản dịch','error');
+  saveBlob(xl.out,xl.file.name.replace(/\.(xlsx|xlsm)$/i,'')+'-da-dich'+(/\.xlsm$/i.test(xl.file.name)?'.xlsm':'.xlsx'));
+  toast('📗 Đã tải Excel','success');
+};
+$('xlCopy').onclick=()=>copyPairs(xl.pairs);
+
+/* ═══════════ EPUB ═══════════ */
+const BLOCK=new Set('html body p div h1 h2 h3 h4 h5 h6 li ul ol dl dt dd table thead tbody tfoot tr td th caption blockquote figure figcaption section article aside header footer nav details summary address form fieldset legend center'.split(' '));
+const SKIP=new Set(['script','style','code','pre','svg','math','head_meta']);
+const BIL=new Set('p li h1 h2 h3 h4 h5 h6 blockquote dd dt figcaption'.split(' '));
+const NOBLOCK=new Set();
+const ep={file:null,buf:null,opfPath:'',opfDir:'',chapters:[],out:null,pairs:[]};
+const normPath=p=>{const o=[];p.split('/').forEach(s=>{if(s==='..')o.pop();else if(s&&s!=='.')o.push(s);});return o.join('/');};
+const parseXml=(s,t)=>new DOMParser().parseFromString(s,t);
+const hasErr=d=>d.getElementsByTagName('parsererror').length>0;
+
+// Gom các text node thành "nhóm" theo khối (đoạn văn), giữ nguyên thẻ inline (<b>,<i>,<a>...)
+function groupsOf(el,out,blockSet){
+  blockSet=blockSet||BLOCK;
+  let cur=[];
+  const flush=()=>{if(cur.length)out.push({nodes:cur,el});cur=[];};
+  const visit=n=>{
+    for(const c of Array.from(n.childNodes)){
+      if(c.nodeType===3){if(/\p{L}/u.test(c.nodeValue))cur.push(c);}
+      else if(c.nodeType===1){
+        const ln=c.localName.toLowerCase();
+        if(SKIP.has(ln))continue;
+        if(blockSet.has(ln)){flush();groupsOf(c,out,blockSet);}
+        else visit(c);
+      }
+    }
+  };
+  visit(el);flush();
+}
+const hasBlockDesc=el=>Array.from(el.getElementsByTagName('*')).some(c=>BLOCK.has(c.localName.toLowerCase()));
+const groupText=g=>g.nodes.length===1?clean(g.nodes[0].nodeValue):g.nodes.map((n,i)=>(i?` ⟦${i}⟧ `:'')+clean(n.nodeValue)).join('');
+const MARK=/\s*⟦\d+⟧\s*/;
+function applyGroup(g,t,bil){
+  const nodes=g.nodes;let parts=null,fallback=false;
+  if(nodes.length===1)parts=[t.replace(new RegExp(MARK.source,'g'),' ').trim()];
+  else{const p=t.split(MARK);if(p.length===nodes.length)parts=p;}
+  if(!parts){fallback=true;parts=[t.replace(new RegExp(MARK.source,'g'),' ').trim()];for(let i=1;i<nodes.length;i++)parts.push('');}
+  let clone=null;
+  if(bil&&BIL.has(g.el.localName.toLowerCase())&&g.el.parentNode&&!hasBlockDesc(g.el))clone=g.el.cloneNode(true);
+  nodes.forEach((n,i)=>{
+    const m=n.nodeValue.match(/^(\s*)[\s\S]*?(\s*)$/);
+    n.nodeValue=(i===0||parts[i])?m[1]+parts[i].trim()+m[2]:'';
+  });
+  if(clone){
+    Array.from(clone.querySelectorAll('[id]')).forEach(e=>e.removeAttribute('id'));
+    clone.removeAttribute('id');
+    clone.setAttribute('style',(clone.getAttribute('style')||'')+';opacity:.6;font-size:.92em');
+    g.el.parentNode.insertBefore(clone,g.el);
+  }
+  return fallback;
+}
+async function epLoad(f){
+  if(!/\.epub$/i.test(f.name))return toast('Chỉ hỗ trợ file .epub','error');
+  ep.file=f;ep.out=null;ep.pairs=[];
+  $('epPrev').innerHTML='';$('epActs').style.display='none';
+  setStatus('epStat','📂 Đang đọc EPUB...','info');
+  try{
+    ep.buf=await f.arrayBuffer();
+    const zip=await JSZip.loadAsync(ep.buf);
+    const cf=zip.file('META-INF/container.xml');
+    if(!cf)throw new Error('Không phải EPUB hợp lệ (thiếu container.xml)');
+    const rf=parseXml(await cf.async('string'),'application/xml').getElementsByTagNameNS('*','rootfile')[0];
+    const opfPath=rf&&rf.getAttribute('full-path');
+    if(!opfPath||!zip.file(opfPath))throw new Error('Không tìm thấy file OPF (sách có thể bị DRM)');
+    const odom=parseXml(await zip.file(opfPath).async('string'),'application/xml');
+    ep.opfPath=opfPath;ep.opfDir=opfPath.includes('/')?opfPath.slice(0,opfPath.lastIndexOf('/')+1):'';
+    const man={};
+    Array.from(odom.getElementsByTagNameNS('*','item')).forEach(it=>{man[it.getAttribute('id')]={href:it.getAttribute('href')||'',type:it.getAttribute('media-type')||''};});
+    ep.chapters=[];
+    Array.from(odom.getElementsByTagNameNS('*','itemref')).forEach(r=>{
+      const m=man[r.getAttribute('idref')];
+      if(!m||!/x?html/i.test(m.type))return;
+      let path;try{path=normPath(ep.opfDir+decodeURIComponent(m.href.split('#')[0]));}catch(e){path=normPath(ep.opfDir+m.href.split('#')[0]);}
+      if(zip.file(path))ep.chapters.push(path);
+    });
+    if(!ep.chapters.length)throw new Error('Không tìm thấy chương nào trong sách');
+    const title=(odom.getElementsByTagNameNS('*','title')[0]||{}).textContent||f.name;
+    $('epInfo').innerHTML=`<div class="file-row"><span class="file-icon">📚</span><div class="file-info"><div class="file-name">${escHtml(title.trim())}</div><div class="file-meta">${(f.size/1024).toFixed(1)} KB · ${ep.chapters.length} chương/phần</div></div></div>
+      <details style="margin-top:6px"><summary style="font-size:12px;cursor:pointer;color:var(--gray-500)">Xem danh sách chương (để chọn số chương ở ô "Chương")</summary>
+      <div style="max-height:150px;overflow:auto;font-size:12px;color:var(--gray-600);padding:6px 4px">${ep.chapters.map((c,i)=>`<div><b>${i+1}.</b> ${escHtml(c.split('/').pop())}</div>`).join('')}</div></details>`;
+    $('epBtn').style.display='flex';
+    setStatus('epStat','','');
+  }catch(e){setStatus('epStat','❌ '+e.message,'error');}
+}
+async function epRun(){
+  if(!ep.buf)return toast('Chưa chọn file EPUB','error');
+  const src=$('epSrc').value,tgt=$('epTgt').value,bil=$('epBil').checked,setLang=$('epLang').checked;
+  const rangeStr=$('epRange').value.trim(),code=LANG_CODES[tgt]||'en';
+  const pages=parsePageRange(rangeStr,ep.chapters.length);
+  if(!pages.length)throw new Error('Số chương không hợp lệ (sách có '+ep.chapters.length+' chương)');
+  const chosen=new Set(pages.map(n=>ep.chapters[n-1]));
+  setStatus('epStat','📂 Đang phân tích sách...','info');
+  const zip=await JSZip.loadAsync(ep.buf);
+  const files=Object.keys(zip.files).filter(n=>{
+    if(zip.files[n].dir)return false;
+    if(chosen.has(n))return true;
+    if(rangeStr)return false;
+    return /\.(xhtml|html|htm)$/i.test(n)||/\.ncx$/i.test(n)||n===ep.opfPath;
+  });
+  const docs=[],groups=[],texts=[];
+  for(const name of files){
+    const isHtml=/\.(xhtml|html|htm)$/i.test(name),isNcx=/\.ncx$/i.test(name),isOpf=name===ep.opfPath;
+    const xml=await zip.files[name].async('string');
+    let dom=parseXml(xml,isHtml?'application/xhtml+xml':'application/xml');
+    if(hasErr(dom)){
+      if(!isHtml)continue;
+      dom=parseXml(xml,'text/html'); // sách viết HTML lỏng lẻo → đọc bằng HTML parser
+    }
+    const gs=[];
+    if(isHtml)groupsOf(dom.documentElement,gs);
+    else if(isNcx)Array.from(dom.getElementsByTagNameNS('*','text')).forEach(el=>groupsOf(el,gs,NOBLOCK));
+    else if(isOpf){
+      Array.from(dom.getElementsByTagNameNS('*','title')).concat(Array.from(dom.getElementsByTagNameNS('*','description'))).forEach(el=>groupsOf(el,gs,NOBLOCK));
+    }
+    docs.push({name,dom,isHtml,isNcx,isOpf});
+    gs.forEach(g=>{groups.push(g);texts.push(groupText(g));});
+  }
+  if(!texts.length)throw new Error('Không tìm thấy chữ để dịch');
+  const out=await translateUnits(texts,src,tgt,'epStat','Đang dịch','epPb');
+  setStatus('epStat','🧩 Đang ghép bản dịch vào sách...','info');
+  let fb=0;const pairs=[];
+  groups.forEach((g,i)=>{
+    const t=(out[i]&&out[i].trim())?out[i].trim():texts[i];
+    pairs.push([texts[i].replace(new RegExp(MARK.source,'g'),' '),t.replace(new RegExp(MARK.source,'g'),' ')]);
+    if(applyGroup(g,t,bil))fb++;
+  });
+  docs.forEach(d=>{
+    if(setLang){
+      const root=d.dom.documentElement;
+      try{
+        if(d.isHtml){root.setAttribute('lang',code);root.setAttributeNS(XML_NS,'xml:lang',code);}
+        else if(d.isNcx)root.setAttributeNS(XML_NS,'xml:lang',code);
+        else if(d.isOpf)Array.from(d.dom.getElementsByTagNameNS('*','language')).forEach(e=>e.textContent=code);
+      }catch(e){}
+    }
+    zip.file(d.name,withDecl(new XMLSerializer().serializeToString(d.dom)));
+  });
+  if(zip.file('mimetype'))zip.file('mimetype','application/epub+zip',{compression:'STORE'}); // yêu cầu của chuẩn EPUB
+  ep.out=await zip.generateAsync({type:'blob',mimeType:'application/epub+zip',compression:'DEFLATE'});
+  ep.pairs=pairs;
+  $('epPrev').innerHTML=pairsHtml(pairs);
+  $('epActs').style.display='flex';
+  updateStats(texts.join('').length);
+  setStatus('epStat',`✅ Dịch xong ${pairs.length} đoạn / ${pages.length} chương!`+(fb?` (${fb} đoạn có định dạng in đậm/nghiêng bị gộp lại)`:'')+' Bấm "Tải EPUB đã dịch".','success');
+}
+bindDrop($('epDrop'),$('epFile'),epLoad);
+$('epBtn').onclick=()=>runTool($('epBtn'),'📚 Dịch EPUB','epStat','epProgW','epPb',epRun);
+$('epDl').onclick=()=>{
+  if(!ep.out)return toast('Chưa có bản dịch','error');
+  saveBlob(ep.out,ep.file.name.replace(/\.epub$/i,'')+'-da-dich.epub');
+  toast('📚 Đã tải EPUB','success');
+};
+$('epCopy').onclick=()=>copyPairs(ep.pairs);
+
+/* ── Kéo thả .xlsx / .epub vào bất kỳ đâu trên trang ── */
+window.addEventListener('drop',e=>{
+  if(e.target.closest&&e.target.closest('.upload-zone,.img-drop-zone'))return;
+  const f=e.dataTransfer&&e.dataTransfer.files[0];if(!f)return;
+  if(/\.(xlsx|xlsm)$/i.test(f.name)){e.preventDefault();switchTab('excel',[...tabsEl.querySelectorAll('.tab-btn')].find(b=>/'excel'/.test(b.getAttribute('onclick'))));xlPick(f);}
+  else if(/\.epub$/i.test(f.name)){e.preventDefault();switchTab('epub',[...tabsEl.querySelectorAll('.tab-btn')].find(b=>/'epub'/.test(b.getAttribute('onclick'))));epLoad(f);}
+});
+})();
+/* ═══════════ LỊCH SỬ ĐẦY ĐỦ + ĐA ĐỊNH DẠNG ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+const tabsEl=document.querySelector('.tabs');
+const activeTab=()=>(document.querySelector('.panel.active')?.id||'').replace('panel-','');
+const withDecl=x=>/^<\?xml/.test(x)?x:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+x;
+const ext=n=>(n.split('.').pop()||'').toLowerCase();
+const HAS=/\p{L}/u;
+
+/* ───────── A. LỊCH SỬ: ghi mọi công cụ, kể cả khi bấm Dừng ───────── */
+let cur=null;
+const _tca=translateCellArray;
+translateCellArray=async function(cells,...rest){
+  const r=await _tca.call(this,cells,...rest);
+  if(cur)cells.forEach((c,i)=>{if(c&&HAS.test(c)&&r[i]!=null)cur.buf.push([c,String(r[i])]);});
+  return r;
+};
+const ICON={file:'📕 PDF/Word',pptx:'📊 PPTX',excel:'📗 Excel',epub:'📚 EPUB',multi:'🧩'};
+const LIDS={file:['srcLang','tgtLang'],pptx:['srcLangPptx','tgtLangPptx'],excel:['xlSrc','xlTgt'],epub:['epSrc','epTgt'],multi:['mfSrc','mfTgt']};
+function addHist(label,srcFull,tgtFull,sl,tl){
+  if($('optSaveHistory')?.checked===false)return;
+  srcFull=srcFull.slice(0,60000);tgtFull=tgtFull.slice(0,60000);
+  const one=s=>s.replace(/\s+/g,' ');
+  saveHistory(label+' — '+one(srcFull).slice(0,70),one(tgtFull).slice(0,120),sl,tl,label+'\n\n'+srcFull,tgtFull);
+  if($('panel-history')?.classList.contains('active'))renderHistory();
+  toast('🕘 Đã lưu vào Lịch sử','info');
+}
+function nameOf(tab){
+  if(tab==='file')return files.map(f=>f.name).join(', ');
+  if(tab==='pptx')return pptxData?.file?.name||'';
+  if(tab==='multi')return mf.map(x=>x.file.name).join(', ');
+  return $('panel-'+tab)?.querySelector('.file-name')?.textContent||'';
+}
+function commit(s){
+  if(cur===s)cur=null;
+  if(!s||!s.buf.length||!ICON[s.tab])return;
+  if(s.tab==='file'&&!s.layout)return; // chế độ thường đã tự lưu
+  const seen=new Set(),pairs=s.buf.filter(p=>!seen.has(p[0])&&seen.add(p[0]));
+  const ids=LIDS[s.tab]||[],sl=$(ids[0])?.value,tl=$(ids[1])?.value;
+  const label=ICON[s.tab]+' '+nameOf(s.tab)+(s.stopped?' ⏹ dừng giữa chừng':'');
+  addHist(label,pairs.map(p=>p[0]).join('\n'),pairs.map(p=>p[1]).join('\n'),sl==='auto'?'Tự động':sl,tl);
+}
+let prev=false;
+setInterval(()=>{
+  const t=!!isTranslating;
+  if(t&&!prev){
+    if(cur)commit(cur);
+    const tab=activeTab();
+    cur={tab,buf:[],stopped:false,layout:tab==='file'&&!!$('pdfKeepLayout')?.checked&&files.some(f=>/\.(pdf|docx)$/i.test(f.name))};
+  }else if(!t&&prev&&cur){const s=cur;setTimeout(()=>commit(s),700);}
+  prev=t;
+},250);
+
+// Bấm Dừng: lưu phần đã dịch dở của tab Văn bản / Tệp thường
+const _stop=stopTranslation;
+stopTranslation=function(){
+  try{
+    if(isTranslating){
+      if(cur)cur.stopped=true;
+      const tab=activeTab(),sl=()=>$(tab==='text'?'srcLang2':'srcLang').value,tl=()=>$(tab==='text'?'tgtLang2':'tgtLang').value;
+      if(tab==='text'){
+        const part=($('rb2inner')?.innerText||'').trim(),srcT=$('textIn').value.trim();
+        if(part&&srcT&&$('res2').style.display!=='none'&&part!==(result2||'').trim())
+          addHist('⌨️ Văn bản ⏹ dừng giữa chừng',srcT,part,sl()==='auto'?'Tự động':sl(),tl());
+      }else if(tab==='file'&&!(cur&&cur.layout)&&result1Segments.length){
+        const part=getPlainTextFromSegments(result1Segments).trim();
+        if(part)addHist('📄 '+nameOf('file')+' ⏹ dừng giữa chừng',nameOf('file'),part,sl()==='auto'?'Tự động':sl(),tl());
+      }
+    }
+  }catch(e){console.warn(e);}
+  return _stop.apply(this,arguments);
+};
+
+// Ảnh: ghi lịch sử sau khi xử lý
+const _dtai=doTranslateAllImages;
+doTranslateAllImages=async function(...a){
+  try{return await _dtai.apply(this,a);}
+  finally{
+    imgQueue.forEach(it=>{
+      if(it.status==='done'&&!it._logged&&(it.ocr||'').trim()){
+        it._logged=1;
+        addHist('🖼️ '+it.file.name,it.ocr,it.translated||'',$('srcLangImg').value==='auto'?'Tự động':$('srcLangImg').value,$('tgtLangImg').value);
+      }
+    });
+  }
+};
+
+/* ───────── B. TAB 🧩 KHÁC: nhiều định dạng mới ───────── */
+const LN=Object.keys(LANG_CODES);
+const langOpts=(auto,def)=>(auto?'<option value="auto">🔍 Tự động</option>':'')+LN.map(l=>`<option value="${l}"${l===def?' selected':''}>${l.replace('tiếng ','Tiếng ')}</option>`).join('');
+tabsEl.insertAdjacentHTML('beforeend',`<button class="tab-btn" style="order:5" onclick="switchTab('multi',this)">🧩 Khác</button>`);
+$('panel-settings').insertAdjacentHTML('afterend',`
+<div id="panel-multi" class="panel">
+  <div class="tool-hero" style="background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1.5px solid #bfdbfe;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px">
+    <h3 style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:5px">🧩 Dịch đa định dạng</h3>
+    <p style="font-size:12.5px;color:var(--gray-600);line-height:1.6">🎬 Phụ đề <b>.srt .vtt .ass</b> (giữ mốc thời gian) · 🌐 <b>.html</b> (giữ thẻ) · 📝 <b>.md</b> (giữ code, link) · 📊 <b>.csv .tsv</b> (chọn cột) · 🧾 <b>.json</b> (chỉ dịch giá trị) · 📘 <b>.odt .ods .odp</b>. Kéo thả vào tab Tệp cũng tự nhận.</p>
+  </div>
+  <div class="lang-bar">
+    <div><div class="field-label">Từ ngôn ngữ</div><select id="mfSrc">${langOpts(true,'auto')}</select></div>
+    <button class="swap-btn" onclick="swapLangs('mfSrc','mfTgt')">⇄</button>
+    <div><div class="field-label">Sang ngôn ngữ</div><select id="mfTgt">${langOpts(false,'tiếng Việt')}</select></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;padding:10px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs)">
+    <label style="font-size:12px;font-weight:700;color:#1d4ed8;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="mfBil"> 📖 Song ngữ (phụ đề: gốc + dịch)</label>
+    <div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;font-weight:700;color:#1d4ed8;white-space:nowrap">📊 Cột CSV:</span><input type="text" id="mfCols" placeholder="VD: 2,4 (trống = tất cả)" style="flex:1;padding:7px 10px;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs);font-size:12px;outline:none"></div>
+  </div>
+  <div class="upload-zone" id="mfDrop" style="background:linear-gradient(135deg,#eff6ff,#f5f3ff)"><span class="icon">🧩</span><p>Kéo thả hoặc <strong>nhấn để chọn</strong> nhiều tệp</p><small>SRT · VTT · ASS · HTML · MD · CSV · TSV · JSON · ODT · ODS · ODP</small></div>
+  <input type="file" id="mfFile" multiple accept=".srt,.vtt,.ass,.ssa,.html,.htm,.md,.markdown,.csv,.tsv,.json,.odt,.ods,.odp" style="display:none">
+  <div id="mfList" style="margin-top:10px"></div>
+  <div id="mfProgW" style="display:none"><div class="progress-wrap"><div class="progress-bar" id="mfPb" style="width:0%"></div></div></div>
+  <div id="mfStat" class="status-wrap"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="action-btn green" id="mfZip" style="display:none">📦 Tải tất cả (.zip)</button></div>
+  <button class="primary-btn" id="mfBtn" style="display:none">🧩 Dịch tất cả</button>
+  <div class="note">⚠️ HTML/ODF: dịch theo từng đoạn chữ nên chữ bị chia bởi thẻ <b>&lt;b&gt;</b>/<b>&lt;i&gt;</b> có thể kém mạch lạc hơn. ASS: thẻ định dạng giữa câu bị bỏ. Markdown: dòng nào AI làm mất link/code sẽ được giữ nguyên bản gốc.</div>
+</div>`);
+
+const mf=[];
+const T=(s,type)=>new Blob([s],{type:(type||'text/plain')+';charset=utf-8'});
+let L={src:'auto',tgt:'tiếng Việt'};
+async function tr(texts){
+  const out=[],N=60;
+  for(let i=0;i<texts.length;i+=N){
+    if(!isTranslating)throw Object.assign(new Error('stop'),{name:'AbortError'});
+    setStatus('mfStat',`[${currentProvider.toUpperCase()}] Đang dịch ${Math.min(i+N,texts.length)}/${texts.length} đoạn...`,'info');
+    $('mfPb').style.width=Math.round(i/texts.length*100)+'%';
+    out.push(...await translateCellArray(texts.slice(i,i+N),L.src,L.tgt,tone1));
+  }
+  $('mfPb').style.width='100%';
+  return out;
+}
+async function applyJobs(jobs){
+  if(!jobs.length)throw new Error('Không tìm thấy chữ để dịch');
+  const out=await tr(jobs.map(j=>j.text));
+  return jobs.map((j,k)=>{const t=(out[k]&&String(out[k]).trim())?String(out[k]).trim():j.text;j.fn(t);return[j.text,t];});
+}
+const H={};
+
+/* Phụ đề SRT / VTT */
+H.srt=H.vtt=async f=>{
+  const raw=(await f.text()).replace(/^\ufeff/,''),nl=raw.includes('\r\n')?'\r\n':'\n',bil=$('mfBil').checked,jobs=[];
+  const res=raw.replace(/\r\n?/g,'\n').split(/\n{2,}/).map(b=>({b,lines:b.split('\n')}));
+  res.forEach(o=>{
+    if(/^(NOTE|STYLE|REGION|WEBVTT)/.test(o.b))return;
+    const k=o.lines.findIndex(l=>l.includes('-->'));if(k<0)return;
+    const text=o.lines.slice(k+1).join('\n').trim();if(!HAS.test(text))return;
+    jobs.push({text,fn:t=>{o.b=o.lines.slice(0,k+1).join('\n')+'\n'+((bil&&t!==text)?text+'\n'+t:t);}});
+  });
+  const pairs=await applyJobs(jobs);
+  return{blob:T(res.map(o=>o.b).join('\n\n').replace(/\n/g,nl)+nl),pairs};
+};
+/* Phụ đề ASS / SSA */
+H.ass=H.ssa=async f=>{
+  const raw=(await f.text()).replace(/^\ufeff/,''),nl=raw.includes('\r\n')?'\r\n':'\n',lines=raw.split(/\r?\n/),bil=$('mfBil').checked,jobs=[];
+  lines.forEach((l,i)=>{
+    const m=l.match(/^(Dialogue:\s*(?:[^,]*,){9})(.*)$/);if(!m||/\\p[1-9]/.test(m[2]))return;
+    const lead=(m[2].match(/^(\{[^}]*\})*/)||[''])[0];
+    const body=m[2].slice(lead.length).replace(/\{[^}]*\}/g,'').replace(/\\[Nn]/g,'\n').trim();
+    if(!HAS.test(body))return;
+    jobs.push({text:body,fn:t=>{lines[i]=m[1]+lead+((bil&&t!==body)?body+'\n'+t:t).replace(/\n/g,'\\N');}});
+  });
+  const pairs=await applyJobs(jobs);
+  return{blob:T(lines.join(nl)),pairs};
+};
+/* HTML */
+H.html=H.htm=async f=>{
+  const raw=await f.text(),full=/<html|<!doctype/i.test(raw),jobs=[];
+  const doc=new DOMParser().parseFromString(raw,'text/html');
+  const SK=/^(SCRIPT|STYLE|CODE|PRE|NOSCRIPT|TEXTAREA|KBD|SAMP|SVG|MATH)$/;
+  const tw=doc.createTreeWalker(doc.documentElement,NodeFilter.SHOW_TEXT);let n;
+  while((n=tw.nextNode())){
+    if(!HAS.test(n.nodeValue))continue;
+    let a=n.parentNode,skip=false;
+    while(a&&a.nodeType===1){if(SK.test(a.nodeName.toUpperCase())){skip=true;break;}a=a.parentNode;}
+    if(skip)continue;
+    const node=n,m=node.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
+    jobs.push({text:m[2].replace(/\s+/g,' '),fn:t=>{node.nodeValue=m[1]+t+m[3];}});
+  }
+  doc.querySelectorAll('[alt],[title],[placeholder],[aria-label]').forEach(el=>['alt','title','placeholder','aria-label'].forEach(at=>{
+    const v=el.getAttribute(at);if(v&&HAS.test(v)&&!/^https?:/.test(v))jobs.push({text:v,fn:t=>el.setAttribute(at,t)});
+  }));
+  const md=doc.querySelector('meta[name="description"]');
+  if(md&&HAS.test(md.getAttribute('content')||''))jobs.push({text:md.getAttribute('content'),fn:t=>md.setAttribute('content',t)});
+  const pairs=await applyJobs(jobs);
+  doc.documentElement.setAttribute('lang',LANG_CODES[L.tgt]||'en');
+  const cs=doc.querySelector('meta[charset]');if(cs)cs.setAttribute('charset','utf-8');
+  return{blob:T(full?'<!DOCTYPE html>\n'+doc.documentElement.outerHTML:doc.body.innerHTML,'text/html'),pairs};
+};
+/* Markdown */
+H.md=H.markdown=async f=>{
+  const raw=(await f.text()).replace(/^\ufeff/,''),nl=raw.includes('\r\n')?'\r\n':'\n',lines=raw.split(/\r?\n/),jobs=[];
+  let fence=false,fm=lines[0]&&lines[0].trim()==='---'?1:0,skipped=0;
+  lines.forEach((l,i)=>{
+    if(fm){if(i>0&&/^(---|\.\.\.)\s*$/.test(l))fm=0;return;}
+    if(/^\s*(```|~~~)/.test(l)){fence=!fence;return;}
+    if(fence||!HAS.test(l)||/^\s*(<!--|\[[^\]]+\]:\s)/.test(l))return;
+    if(/^\s*\|/.test(l)){
+      const parts=l.split('|');
+      parts.forEach((c,k)=>{
+        if(!HAS.test(c)||/^\s*:?-+:?\s*$/.test(c))return;
+        const m=c.match(/^(\s*)([\s\S]*?)(\s*)$/);
+        jobs.push({text:m[2],fn:t=>{parts[k]=m[1]+t.replace(/\|/g,'/')+m[3];lines[i]=parts.join('|');}});
+      });
+      return;
+    }
+    const pre=l.match(/^(\s*(?:>\s*)*(?:#{1,6}\s+|[-*+]\s+(?:\[[ xX]\]\s+)?|\d+[.)]\s+)?)/)[0],toks=[];
+    const body=l.slice(pre.length).replace(/(`[^`]*`|\]\([^)]*\)|https?:\/\/[^\s)>\]]+|<[^>]+>|\[\^[^\]]+\])/g,m=>{toks.push(m);return '⟪'+(toks.length-1)+'⟫';});
+    if(!HAS.test(body.replace(/⟪\d+⟫/g,'')))return;
+    jobs.push({text:body,fn:t=>{
+      if((t.match(/⟪\d+⟫/g)||[]).length!==toks.length){skipped++;return;}
+      lines[i]=pre+t.replace(/⟪(\d+)⟫/g,(_,k)=>toks[+k]);
+    }});
+  });
+  const pairs=await applyJobs(jobs);
+  return{blob:T(lines.join(nl),'text/markdown'),pairs,note:skipped?skipped+' dòng giữ nguyên gốc (AI làm mất link/code)':''};
+};
+/* CSV / TSV */
+function parseCsv(s,d){
+  const rows=[];let row=[],c='',q=false;
+  for(let i=0;i<s.length;i++){
+    const ch=s[i];
+    if(q){if(ch==='"'){if(s[i+1]==='"'){c+='"';i++;}else q=false;}else c+=ch;}
+    else if(ch==='"')q=true;
+    else if(ch===d){row.push(c);c='';}
+    else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&s[i+1]==='\n')i++;row.push(c);rows.push(row);row=[];c='';}
+    else c+=ch;
+  }
+  if(c!==''||row.length){row.push(c);rows.push(row);}
+  return rows;
+}
+H.csv=H.tsv=async f=>{
+  const raw=(await f.text()).replace(/^\ufeff/,''),first=raw.split(/\r?\n/)[0]||'',cnt=c=>first.split(c).length-1;
+  const d=/\.tsv$/i.test(f.name)?'\t':[',',';','\t','|'].sort((a,b)=>cnt(b)-cnt(a))[0];
+  const rows=parseCsv(raw,d),cols=new Set(($('mfCols').value.match(/\d+/g)||[]).map(Number)),jobs=[];
+  rows.forEach(r=>r.forEach((c,j)=>{
+    if(cols.size&&!cols.has(j+1))return;
+    if(!HAS.test(c)||/^(https?:\/\/|www\.)\S+$|^\S+@\S+\.\S+$/.test(c.trim()))return;
+    jobs.push({text:c,fn:t=>{r[j]=t;}});
+  }));
+  const pairs=await applyJobs(jobs);
+  const q=c=>(/["\r\n]/.test(c)||c.includes(d))?'"'+c.replace(/"/g,'""')+'"':c;
+  return{blob:T('\ufeff'+rows.map(r=>r.map(q).join(d)).join('\r\n'),'text/csv'),pairs};
+};
+/* JSON: chỉ dịch giá trị chuỗi, giữ nguyên khóa */
+H.json=async f=>{
+  const data=JSON.parse((await f.text()).replace(/^\ufeff/,'')),jobs=[];
+  const ok=s=>HAS.test(s)&&!/^(https?:\/\/|www\.)\S+$|^\S+@\S+\.\S+$/.test(s)&&!(/^[\w.\-:\/#@]+$/.test(s)&&/[_\d.\/:#@-]/.test(s));
+  const walk=o=>{
+    if(Array.isArray(o))o.forEach((v,i)=>{if(typeof v==='string'){if(ok(v))jobs.push({text:v,fn:t=>{o[i]=t;}});}else walk(v);});
+    else if(o&&typeof o==='object')Object.keys(o).forEach(k=>{const v=o[k];if(typeof v==='string'){if(ok(v))jobs.push({text:v,fn:t=>{o[k]=t;}});}else walk(v);});
+  };
+  walk(data);
+  const pairs=await applyJobs(jobs);
+  return{blob:T(JSON.stringify(data,null,2),'application/json'),pairs};
+};
+/* OpenDocument: ODT / ODS / ODP */
+const TXT='urn:oasis:names:tc:opendocument:xmlns:text:1.0';
+const ODF={odt:'application/vnd.oasis.opendocument.text',ods:'application/vnd.oasis.opendocument.spreadsheet',odp:'application/vnd.oasis.opendocument.presentation'};
+H.odt=H.ods=H.odp=async f=>{
+  const zip=await JSZip.loadAsync(await f.arrayBuffer()),docs=[],jobs=[];
+  for(const name of ['content.xml','styles.xml']){
+    if(!zip.file(name))continue;
+    const dom=new DOMParser().parseFromString(await zip.file(name).async('string'),'application/xml');
+    if(dom.getElementsByTagName('parsererror').length)continue;
+    docs.push({name,dom});
+    const tw=dom.createTreeWalker(dom.documentElement,NodeFilter.SHOW_TEXT);let n;
+    while((n=tw.nextNode())){
+      if(!HAS.test(n.nodeValue))continue;
+      let a=n.parentNode,inP=false;
+      while(a&&a.nodeType===1){if(a.namespaceURI===TXT&&(a.localName==='p'||a.localName==='h')){inP=true;break;}a=a.parentNode;}
+      if(!inP)continue;
+      const node=n,m=node.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      jobs.push({text:m[2].replace(/\s+/g,' '),fn:t=>{node.nodeValue=m[1]+t+m[3];}});
+    }
+  }
+  const pairs=await applyJobs(jobs);
+  docs.forEach(d=>zip.file(d.name,withDecl(new XMLSerializer().serializeToString(d.dom))));
+  const mt=zip.file('mimetype');if(mt)zip.file('mimetype',await mt.async('string'),{compression:'STORE'});
+  return{blob:await zip.generateAsync({type:'blob',mimeType:ODF[ext(f.name)],compression:'DEFLATE'}),pairs};
+};
+
+/* ── Danh sách + chạy ── */
+const IC={srt:'🎬',vtt:'🎬',ass:'🎬',ssa:'🎬',md:'📝',markdown:'📝',html:'🌐',htm:'🌐',csv:'📊',tsv:'📊',json:'🧾',odt:'📘',ods:'📗',odp:'📙'};
+const ST={pending:'🕐 Chờ',run:'⏳ Đang dịch...',done:'✅ Xong',err:'❌ Lỗi'};
+const pv=pairs=>`<div style="max-height:300px;overflow:auto;border:1.5px solid var(--gray-200);border-radius:10px;margin-top:8px"><table style="width:100%;border-collapse:collapse;font-size:12px">${pairs.slice(0,200).map(([a,b])=>`<tr><td style="padding:6px 8px;border-bottom:1px solid var(--gray-100);width:50%;vertical-align:top;white-space:pre-wrap">${escHtml(a.slice(0,300))}</td><td style="padding:6px 8px;border-bottom:1px solid var(--gray-100);color:#166534;background:#f0fdf4;vertical-align:top;white-space:pre-wrap">${escHtml(b.slice(0,300))}</td></tr>`).join('')}</table></div>`;
+function render(){
+  $('mfList').innerHTML=mf.map((x,i)=>`<div class="file-row" style="flex-wrap:wrap"><span class="file-icon">${IC[ext(x.file.name)]||'📄'}</span><div class="file-info"><div class="file-name">${escHtml(x.file.name)}</div><div class="file-meta">${(x.file.size/1024).toFixed(1)} KB · ${ST[x.status]}${x.err?' · '+escHtml(x.err):''}${x.note?' · '+escHtml(x.note):''}</div></div>${x.out?`<button class="action-btn green" data-a="dl" data-i="${i}">⬇ Tải</button>`:''}${x.pairs?`<button class="action-btn" data-a="pv" data-i="${i}">👁</button>`:''}<button class="rm-btn" data-a="rm" data-i="${i}">✕</button>${(x.open&&x.pairs)?`<div style="width:100%">${pv(x.pairs)}</div>`:''}</div>`).join('');
+  $('mfBtn').style.display=mf.length?'flex':'none';
+  $('mfZip').style.display=mf.some(x=>x.out)?'':'none';
+}
+const outName=f=>f.name.replace(/\.[^.]+$/,'')+'-da-dich.'+ext(f.name);
+function saveBlob(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);}
+$('mfList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;const x=mf[+b.dataset.i];if(!x)return;
+  if(b.dataset.a==='dl')saveBlob(x.out,outName(x.file));
+  else if(b.dataset.a==='pv'){x.open=!x.open;render();}
+  else if(b.dataset.a==='rm'){mf.splice(+b.dataset.i,1);render();}
+});
+function mfAdd(list){
+  [...list].forEach(f=>{
+    if(!H[ext(f.name)])return toast('⚠️ Chưa hỗ trợ: '+f.name,'error');
+    mf.push({file:f,status:'pending'});
+  });
+  render();
+}
+const dz=$('mfDrop');
+dz.onclick=()=>$('mfFile').click();
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');mfAdd(e.dataTransfer.files);});
+$('mfFile').onchange=e=>{mfAdd(e.target.files);e.target.value='';};
+
+$('mfBtn').onclick=async()=>{
+  if(isTranslating){stopTranslation();return;}
+  const todo=mf.filter(x=>x.status!=='done');
+  if(!todo.length)return toast('Tất cả tệp đã dịch xong','info');
+  autoFallbackFree();
+  L={src:$('mfSrc').value,tgt:$('mfTgt').value};
+  const btn=$('mfBtn');
+  isTranslating=true;btn.textContent='⏹️ Dừng dịch';btn.className='primary-btn stop-btn';
+  $('mfProgW').style.display='block';
+  try{
+    for(let k=0;k<todo.length&&isTranslating;k++){
+      const it=todo[k];it.status='run';it.err='';render();
+      setStatus('mfStat',`[${k+1}/${todo.length}] ${escHtml(it.file.name)}...`,'info');
+      try{
+        const r=await H[ext(it.file.name)](it.file);
+        it.out=r.blob;it.pairs=r.pairs;it.note=r.note||'';it.status='done';
+        updateStats(r.pairs.reduce((a,p)=>a+p[0].length,0));
+      }catch(e){
+        if(e.name==='AbortError'){it.status='pending';break;}
+        it.status='err';it.err=e.message;
+      }
+      render();
+    }
+    render();
+    setStatus('mfStat',isTranslating?'✅ Xong! Bấm ⬇ Tải ở từng tệp.':'⏹️ Đã dừng.',isTranslating?'success':'warning');
+  }finally{
+    isTranslating=false;btn.textContent='🧩 Dịch tất cả';btn.className='primary-btn';
+    setTimeout(()=>{$('mfProgW').style.display='none';$('mfPb').style.width='0%';},800);
+  }
+};
+$('mfZip').onclick=async()=>{
+  const z=new JSZip();mf.forEach(x=>{if(x.out)z.file(outName(x.file),x.out);});
+  saveBlob(await z.generateAsync({type:'blob'}),'ban-dich-'+Date.now()+'.zip');
+};
+
+/* ── C. TỰ NHẬN & CHUYỂN HƯỚNG: thả file nào cũng vào đúng tab ── */
+const NEWX=/\.(srt|vtt|ass|ssa|html?|md|markdown|csv|tsv|json|odt|ods|odp)$/i;
+const XLSX_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+function openTab(id){
+  const b=[...tabsEl.querySelectorAll('.tab-btn')].find(x=>(x.getAttribute('onclick')||'').includes("'"+id+"'"));
+  if(b)switchTab(id,b);
+}
+function feed(inputId,f){
+  const inp=$(inputId);if(!inp)return toast('Thiếu tab tương ứng, hãy dán khối Excel/EPUB trước','error');
+  const dt=new DataTransfer();dt.items.add(f);inp.files=dt.files;inp.dispatchEvent(new Event('change'));
+}
+async function xlsToXlsx(f){
+  if(!window.XLSX)await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=()=>rej(new Error('Không tải được SheetJS'));document.head.appendChild(s);});
+  const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellStyles:true});
+  const out=XLSX.write(wb,{bookType:'xlsx',type:'array',bookSST:true,cellStyles:true});
+  return new File([out],f.name.replace(/\.[^.]+$/,'')+'.xlsx',{type:XLSX_MIME});
+}
+async function route(list){
+  const mine=[];
+  for(const f of list){
+    const e=ext(f.name);
+    if(e==='xlsx'||e==='xlsm'){openTab('excel');feed('xlFile',f);}
+    else if(e==='xls'||e==='xlsb'){
+      try{toast('🔄 Đang chuyển '+f.name+' sang .xlsx...','info');const x=await xlsToXlsx(f);openTab('excel');feed('xlFile',x);toast('ℹ️ File cũ đã chuyển sang .xlsx (có thể mất một số định dạng)','info');}
+      catch(err){toast('❌ '+err.message,'error');}
+    }
+    else if(e==='epub'){openTab('epub');feed('epFile',f);}
+    else if(e==='pptx'){openTab('pptx');handlePptxFile(f);}
+    else if(NEWX.test(f.name))mine.push(f);
+  }
+  if(mine.length){openTab('multi');mfAdd(mine);}
+}
+const ROUTE=/\.(xlsx|xlsm|xls|xlsb|epub|pptx|srt|vtt|ass|ssa|html?|md|markdown|csv|tsv|json|odt|ods|odp)$/i;
+const _af=addFiles;
+addFiles=function(fl){
+  const arr=[...fl],mine=arr.filter(f=>ROUTE.test(f.name)),rest=arr.filter(f=>!ROUTE.test(f.name));
+  if(mine.length)route(mine);
+  if(rest.length)_af(rest);
+};
+$('fileIn').setAttribute('accept','.pdf,.docx,.doc,.txt,.xlsx,.xlsm,.xls,.xlsb,.pptx,.epub,.srt,.vtt,.ass,.ssa,.html,.htm,.md,.markdown,.csv,.tsv,.json,.odt,.ods,.odp');
+const sm=document.querySelector('#dropZone small');
+if(sm)sm.textContent='PDF · DOCX · TXT · Excel · PPTX · EPUB · SRT/VTT/ASS · HTML · MD · CSV · JSON · ODT/ODS/ODP — tự chuyển đúng tab';
+window.addEventListener('drop',e=>{
+  if(e.target.closest&&e.target.closest('.upload-zone,.img-drop-zone'))return;
+  const fl=[...(e.dataTransfer?.files||[])].filter(f=>NEWX.test(f.name)||/\.(xls|xlsb)$/i.test(f.name));
+  if(!fl.length)return;
+  e.preventDefault();route(fl);
+});
 })();
 init();
 </script>
