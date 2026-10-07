@@ -649,7 +649,7 @@ html.dark .app-header,html.dark .app canvas,html.dark .app img{filter:invert(1) 
 <div class="header-inner">
   <div class="hd-badges">
     <span class="header-eyebrow"><span class="eyebrow-dot"></span>motkiki</span>
-    <span class="header-version">v1.0</span>
+    <span class="header-version">v2.0</span>
   </div>
   <div class="hd-logo"><span>文</span><b>A</b></div>
   <h1 class="header-title">NIGGEST <span class="gradient-text">WEB</span></h1>
@@ -6100,6 +6100,705 @@ window.addEventListener('drop',e=>{
   if(!fl.length)return;
   e.preventDefault();route(fl);
 });
+})();
+/* ═══════════ PDF: OCR + DỊCH CHỮ TRONG HÌNH / SƠ ĐỒ ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+
+// Tuỳ chọn trên tab Tệp
+$('dropZone').insertAdjacentHTML('beforebegin',`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs)">
+  <span style="font-size:12px;font-weight:700;color:#1d4ed8;white-space:nowrap">🔍 OCR chữ trong hình/sơ đồ (PDF):</span>
+  <select id="pdfImgOcr" style="padding:6px 10px;border:1.5px solid #bfdbfe;border-radius:var(--radius-xs);font-size:12px;outline:none;background:#fff">
+    <option value="img" selected>Chỉ trang có ảnh (khuyên dùng)</option>
+    <option value="all">Mọi trang (chậm hơn, dùng khi sơ đồ là vector)</option>
+    <option value="off">Tắt</option>
+  </select>
+</div>`);
+
+async function pageHasImages(page){
+  try{
+    const ops=await page.getOperatorList(),O=pdfjsLib.OPS;
+    const set=new Set([O.paintImageXObject,O.paintInlineImageXObject,O.paintImageMaskXObject,O.paintJpegXObject,O.paintImageXObjectRepeat].filter(x=>x!==undefined));
+    return ops.fnArray.some(f=>set.has(f));
+  }catch(e){return true;}
+}
+const inter=(a,b)=>{
+  const w=Math.min(a.x1,b.x1)-Math.max(a.x0,b.x0),h=Math.min(a.y1,b.y1)-Math.max(a.y0,b.y0);
+  return(w>0&&h>0)?w*h:0;
+};
+const area=b=>Math.max(1,(b.x1-b.x0)*(b.y1-b.y0));
+function scaleBlock(b,k){for(const key in b){if(typeof b[key]==='number'&&key!=='n')b[key]*=k;}}
+
+// OCR phần chữ KHÔNG có trong lớp chữ (chính là chữ nằm trong ảnh)
+async function ocrImageText(page,src,state,textBlocks,baseScale){
+  const OCR_SCALE=2.4;
+  const big=await renderPdfPage(page,OCR_SCALE);
+  const raw=await ocrBlocks(big.canvas,src,state);
+  const k=baseScale/OCR_SCALE;
+  raw.forEach(b=>scaleBlock(b,k));
+  return raw.filter(b=>{
+    if((b.text.match(/\p{L}/gu)||[]).length<2)return false;
+    return !textBlocks.some(t=>inter(b,t)>0.25*area(b)); // trùng với chữ đã có → bỏ
+  });
+}
+
+processPdfPage=async function(page,src,tgt,state){
+  const SC=1.6;
+  let r=await renderPdfPage(page,SC);
+  const content=await page.getTextContent();
+  let blocks=buildPdfBlocks(content.items,r.vp,content.styles),ocr=false,imgCount=0;
+  const mode=$('pdfImgOcr')?.value||'img';
+  const textBlocks=blocks.slice();
+
+  if(!blocks.length){
+    // trang scan hoàn toàn
+    setStatus('stat1','🔍 Trang không có lớp chữ — đang OCR (lần đầu sẽ tải dữ liệu ngôn ngữ, hơi lâu)...','info');
+    r=await renderPdfPage(page,2.2);
+    blocks=await ocrBlocks(r.canvas,src,state);
+    ocr=true;
+  }else if(mode==='all'||(mode==='img'&&await pageHasImages(page))){
+    // trang có chữ + có hình: OCR thêm chữ trong hình
+    setStatus('stat1','🖼️ Đang OCR chữ trong hình/sơ đồ (lần đầu sẽ tải dữ liệu ngôn ngữ)...','info');
+    try{
+      const extra=await ocrImageText(page,src,state,textBlocks,SC);
+      imgCount=extra.length;
+      blocks=blocks.concat(extra);
+    }catch(e){toast('⚠️ OCR hình lỗi: '+e.message,'error');}
+  }
+
+  const trans=document.createElement('canvas');
+  trans.width=r.canvas.width;trans.height=r.canvas.height;
+  trans.getContext('2d').drawImage(r.canvas,0,0);
+  const fcache={};
+  blocks.forEach(b=>{
+    b.fi=(b.fn&&b.fn.indexOf('ocr_')===0)?{bold:b.fn[4]==='1',italic:b.fn[5]==='1',serif:false}:getPdfFontInfo(page,content.styles,b.fn,fcache);
+  });
+  const rec={orig:r.canvas,trans,blocks,ocr,imgOcr:imgCount,w1:r.vp.width/r.vp.scale,h1:r.vp.height/r.vp.scale};
+  if(blocks.length){
+    const texts=blocks.map(b=>b.text);
+    const out=await translateCellArray(texts,src,tgt,tone1);
+    paintPdfPage(rec,out);
+  }
+  if(imgCount)toast(`🖼️ Tìm thấy ${imgCount} đoạn chữ trong hình và đã dịch`,'info');
+  return rec;
+};
+})();
+/* ═══════════ FIX: OCR chữ trong sơ đồ/hình (vector + bitmap) ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+
+// 1. Mặc định OCR mọi trang
+const selOcr=$('pdfImgOcr');
+if(selOcr)selOcr.value='all';
+
+// 2. Chế độ đọc chữ rời rạc (PSM 11) cho sơ đồ, PSM 3 cho trang scan thường
+window.__ocrPsm='3';
+const _gow=getOcrWorker;
+getOcrWorker=async function(src,state){
+  const w=await _gow(src,state);
+  try{await w.setParameters({tessedit_pageseg_mode:window.__ocrPsm||'3'});}catch(e){}
+  return w;
+};
+
+// 3. Hàm phụ
+const inter=(a,b,pad)=>{
+  pad=pad||0;
+  const w=Math.min(a.x1,b.x1+pad)-Math.max(a.x0,b.x0-pad);
+  const h=Math.min(a.y1,b.y1+pad)-Math.max(a.y0,b.y0-pad);
+  return(w>0&&h>0)?w*h:0;
+};
+const area=b=>Math.max(1,(b.x1-b.x0)*(b.y1-b.y0));
+const scaleBlock=(b,k)=>{for(const key in b){if(typeof b[key]==='number'&&key!=='n')b[key]*=k;}};
+
+// OCR phần chữ KHÔNG nằm trong lớp chữ của PDF (chữ trong hình / sơ đồ vector)
+async function ocrDiagramText(page,src,state,textBlocks,baseScale){
+  const OCR_SCALE=3;
+  const big=await renderPdfPage(page,OCR_SCALE);
+  window.__ocrPsm='11';
+  let raw;
+  try{raw=await ocrBlocks(big.canvas,src,state);}
+  finally{window.__ocrPsm='3';}
+  const k=baseScale/OCR_SCALE;
+  raw.forEach(b=>scaleBlock(b,k));
+  return raw.filter(b=>{
+    if((b.text.match(/\p{L}/gu)||[]).length<2)return false;
+    return !textBlocks.some(t=>inter(b,t,4)>0.08*area(b)); // đã có trong lớp chữ → bỏ
+  });
+}
+
+// 4. Xử lý trang PDF (thay bản cũ)
+processPdfPage=async function(page,src,tgt,state){
+  const SC=1.6;
+  let r=await renderPdfPage(page,SC);
+  const content=await page.getTextContent();
+  let blocks=buildPdfBlocks(content.items,r.vp,content.styles),ocr=false,imgCount=0;
+  const mode=$('pdfImgOcr')?.value||'all';
+  const textBlocks=blocks.slice();
+
+  if(!blocks.length){
+    // trang scan hoàn toàn
+    setStatus('stat1','🔍 Trang không có lớp chữ — đang OCR (lần đầu tải dữ liệu ngôn ngữ, hơi lâu)...','info');
+    window.__ocrPsm='3';
+    r=await renderPdfPage(page,2.2);
+    blocks=await ocrBlocks(r.canvas,src,state);
+    ocr=true;
+  }else if(mode!=='off'){
+    setStatus('stat1','🖼️ Đang OCR chữ trong hình/sơ đồ (lần đầu tải dữ liệu ngôn ngữ)...','info');
+    try{
+      const extra=await ocrDiagramText(page,src,state,textBlocks,SC);
+      imgCount=extra.length;
+      blocks=blocks.concat(extra);
+    }catch(e){toast('⚠️ OCR hình lỗi: '+e.message,'error');console.error(e);}
+  }
+
+  const trans=document.createElement('canvas');
+  trans.width=r.canvas.width;trans.height=r.canvas.height;
+  trans.getContext('2d').drawImage(r.canvas,0,0);
+  const fcache={};
+  blocks.forEach(b=>{
+    b.fi=(b.fn&&b.fn.indexOf('ocr_')===0)
+      ?{bold:b.fn[4]==='1',italic:b.fn[5]==='1',serif:false}
+      :getPdfFontInfo(page,content.styles,b.fn,fcache);
+  });
+  const rec={orig:r.canvas,trans,blocks,ocr,imgOcr:imgCount,w1:r.vp.width/r.vp.scale,h1:r.vp.height/r.vp.scale};
+  if(blocks.length){
+    const out=await translateCellArray(blocks.map(b=>b.text),src,tgt,tone1);
+    paintPdfPage(rec,out);
+  }
+  if(imgCount)toast(`🖼️ Tìm thấy ${imgCount} đoạn chữ trong hình và đã dịch`,'info');
+  return rec;
+};
+})();
+/* ═══════════ 🧪 CHẾ ĐỘ TOÁN / LÝ / HÓA ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+
+/* 1. Nút bật/tắt (mặc định BẬT, có nhớ) */
+document.querySelector('.tabs').insertAdjacentHTML('beforebegin',
+`<div style="margin-bottom:14px;padding:10px 12px;background:#fefce8;border:1.5px solid #fde68a;border-radius:var(--radius-xs)">
+  <label style="font-size:12.5px;font-weight:700;color:#854d0e;display:flex;align-items:center;gap:6px;cursor:pointer">
+    <input type="checkbox" id="sciMode"> 🧪 Chế độ Toán / Lý / Hóa (giữ nguyên công thức, ký hiệu, đơn vị, số mũ)
+  </label>
+</div>`);
+const cb=$('sciMode');
+cb.checked=localStorage.getItem('tx_sci')!=='0';
+cb.onchange=()=>localStorage.setItem('tx_sci',cb.checked?'1':'0');
+const on=()=>!!$('sciMode')?.checked;
+
+/* 2. Nhận diện & bảo vệ công thức */
+const UN=new Set('m cm mm km nm pm fm Å um µm μm g kg mg s ms µs μs ns min h hr Hz kHz MHz GHz N kN J kJ MJ eV keV MeV GeV W kW MW V mV kV A mA C K mol L mL l T G Pa kPa MPa atm bar rad deg ft yd mi lb oz in ohm Ω u Bq Sv Ci cal kcal Btu dyn erg Wb H F mph rpm dB'.split(' '));
+const AMB=new Set(['in','at','min','u','h']);
+const STOP=new Set('a an as at by do go he i if in is it me my no of on or so to up us we the and for are can not but you she him her was its who how why all any one two out per via yes'.split(' '));
+const SYM=/[=≈≠≤≥±×·∙⋅÷∝∞∑∫√∂∇∆Δ^_→⇒←↔°%⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻₀-₉α-ωΑ-Ω\\]/;
+const STRONG=/^(?:arc)?(?:sin|cos|tan|cot|sec|csc)h?$|^(?:log|ln|lg|exp|lim|det|sqrt|erf|sgn|gcd|lcm|arg)$/i;
+const WEAK=/^(?:max|min|sup|inf|dim|mod|div|grad|curl|Re|Im|tr|rank)$/;
+const SINGLE=/^[A-Za-zα-ωΑ-Ω]$/;
+const VEC1=/^[îĵĉĝĥŝŵŷẑāēīōūȳ]$/;
+const MARK_A=/[\u20d0-\u20ff\u2190-\u21ff\u2200-\u22ff\u2300-\u23ff\u27c0-\u27ef\u2980-\u2aff\u2100-\u214f\u{1d400}-\u{1d7ff}]/u;
+const MARK_B=/[\u0300-\u036f]/;
+const isOp=t=>/^[=≈≠≤≥±×·∙⋅÷∝<>→⇒←↔+−*^]+$/.test(t)||/[=≈≠≤≥∝→⇒]/.test(t);
+const isMath=t=>isOp(t)||/\d/.test(t)||SYM.test(t)||MARK_A.test(t)||(t.length<=4&&MARK_B.test(t));
+const core=s=>s.replace(/^[("'\[]+|[).,;:!?"'\]]+$/g,'');
+const unitOk=c=>{
+  const parts=c.split(/[\/·*]/).map(p=>p.replace(/[⁰-⁹⁻⁺^\-−\d]+$/,''));
+  return parts.length&&parts.every(p=>UN.has(p));
+};
+function isFunCall(c){
+  const m=c.match(/^([A-Za-zα-ωΑ-Ω][A-Za-z0-9]*)\(([^\s]*)$/);
+  if(!m)return false;
+  if(STRONG.test(m[1])||WEAK.test(m[1]))return true;
+  return m[1].length<=2&&/[\d+\-−*\/=^,α-ωΑ-Ω]|^[A-Za-z]\)?$/.test(m[2]);
+}
+
+function mask(text){
+  const T=[...text.matchAll(/\S+/g)].map(m=>({s:m[0],i:m.index,e:m.index+m[0].length}));
+  const n=T.length;
+  if(!n)return{text,list:[],translate:false};
+  const C=T.map(t=>core(t.s));
+  // m = chắc chắn là toán; g = toán sau khi suy luận theo ngữ cảnh
+  const m=T.map((t,k)=>isMath(t.s)||isFunCall(C[k])||VEC1.test(C[k])||(/\//.test(C[k])&&!AMB.has(C[k])&&unitOk(C[k])&&/^[A-Za-zµμΩÅ\/]+$/.test(C[k])));
+  const g=m.slice();
+  T.forEach((t,k)=>{
+    if(m[k])return;
+    const c=C[k],lc=c.toLowerCase(),prev=T[k-1],next=T[k+1];
+    if(STRONG.test(c)&&next&&(m[k+1]||/^\(/.test(next.s)||SINGLE.test(C[k+1]||''))) g[k]=true;      // sin θ, log x, cos(x)
+    else if(WEAK.test(c)&&next&&(m[k+1]||/^\(/.test(next.s))) g[k]=true;                              // max(a,b), min 5
+    else if(/^[A-Za-zα-ωΑ-Ω]{1,3}$/.test(c)&&!STOP.has(lc)&&((prev&&isOp(prev.s))||(next&&isOp(next.s)))) g[k]=true; // biến: F = ma
+    else if(prev&&m[k-1]&&/\d[)\]]?$/.test(prev.s)&&unitOk(c)&&(!AMB.has(c)||!next||isOp(next.s))) g[k]=true;      // đơn vị sau số
+    else if(k>0&&g[k-1]&&SINGLE.test(c)&&!STOP.has(lc)&&(!next||m[k+1]||isOp(next.s)||/^[^\p{L}]/u.test(next.s))) g[k]=true; // î/ĵ bị OCR thành f, p, P sau đơn vị
+    else if(/^[\/–—\-−|]$/.test(c)&&k>0&&g[k-1]&&next&&m[k+1]) g[k]=true;                           // dấu / giữa các phân số
+  });
+  const list=[];let out='',pos=0,k=0;
+  while(k<n){
+    if(!g[k]){k++;continue;}
+    let j=k;while(j+1<n&&g[j+1])j++;
+    let a=T[k].i,b=T[j].e,seg=text.slice(a,b);
+    const tp=seg.match(/[.,;:!?]+$/);
+    if(tp){seg=seg.slice(0,-tp[0].length);b-=tp[0].length;}
+    if(seg){out+=text.slice(pos,a)+'ZQ'+list.length+'Q';list.push(seg);pos=b;}
+    k=j+1;
+  }
+  out+=text.slice(pos);
+  return{text:out,list,translate:/\p{L}/u.test(out.replace(/ZQ\d+Q/g,''))};
+}
+function unmask(t,info){
+  if(t==null)return null;
+  const seen=new Set();
+  let r=String(t).replace(/Z\s?Q\s?(\d+)\s?Q/gi,(mm,d)=>{
+    if(info.list[+d]===undefined)return mm;
+    seen.add(+d);return info.list[+d];
+  });
+  if(seen.size===0&&info.list.length>0)return null;           // AI bỏ hết mã → giữ bản gốc
+  const missing=info.list.filter((_,i)=>!seen.has(i));         // AI làm rơi vài mã → gắn lại cuối câu, không mất công thức
+  if(missing.length)r+=' '+missing.join(' ');
+  return r;
+}
+
+/* Bọc hàm dịch lõi (PDF, Word, PPTX, Excel, EPUB, tab Khác đều đi qua đây) */
+const _tca=translateCellArray;
+translateCellArray=async function(cells,src,tgt,tone){
+  if(!on())return _tca.apply(this,arguments);
+  const info=cells.map(c=>(c&&/\p{L}/u.test(c))?mask(c):null);
+  const idx=[],send=[];
+  info.forEach((o,i)=>{if(o&&o.translate){idx.push(i);send.push(o.text);}});
+  const res=send.length?await _tca.call(this,send,src,tgt,tone):[];
+  const out=cells.slice();let bad=0;
+  idx.forEach((ci,k)=>{
+    const r=unmask(res[k],info[ci]);
+    if(r===null)bad++;else out[ci]=r;
+  });
+  if(bad)toast('🧪 '+bad+' đoạn giữ nguyên bản gốc để không làm hỏng công thức','info');
+  return out;     // đoạn toàn công thức → trả nguyên gốc → PDF không vẽ đè
+};
+
+/* 3. Luật khoa học thêm vào MỌI prompt (kể cả tab Văn bản & Tệp thường) */
+const _bgn=buildGlossaryNote;
+buildGlossaryNote=function(){
+  let n=_bgn();
+  if(on())n+=`
+
+QUY TẮC KHOA HỌC (Toán/Lý/Hóa/Kỹ thuật) – BẮT BUỘC:
+- Công thức, phương trình, biểu thức, ký hiệu (=, ≈, ±, ×, ·, ∑, ∫, √, ∂, ∇, →...), chữ Hy Lạp, đơn vị (m, kg, s, N, J, Hz, eV, Å, °C...) và số liệu: GIỮ NGUYÊN 100%, không dịch, không bỏ, không đổi dấu.
+- Số mũ/chỉ số dưới giữ nguyên dạng (10⁻¹⁰, x², H₂O, x_i, x^2, LaTeX $...$ \\( \\) \\[ \\]).
+- Vector (v⃗, a⃗, î, ĵ, k̂), chỉ số dưới (v_i, a_av), hàm (sin, cos, tan, log, ln, exp, lim, max, min, f(x)), toán tử Δ, ∑, ∫, d/dx: KHÔNG dịch, KHÔNG đổi, giữ y nguyên.
+- Tên biến và hàm viết bằng chữ cái Latin/Hy Lạp đứng trong biểu thức luôn là ký hiệu, không phải từ vựng.
+- Các mã dạng ZQ12Q là công thức đã được bảo vệ: giữ NGUYÊN từng mã, mỗi mã đúng 1 lần, đúng vị trí ngữ pháp.
+- Dùng thuật ngữ vật lý/toán chuẩn của ngôn ngữ đích (vd: "angular momentum" → "mô-men động lượng"). Không dịch tên định luật/hằng số viết bằng ký hiệu.`;
+  return n;
+};
+
+/* 4. Ghép số mũ/chỉ số dưới vào đúng dòng khi đọc PDF (sửa lỗi "10 15") */
+const SUPM={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','−':'⁻','=':'⁼','(':'⁽',')':'⁾','n':'ⁿ','i':'ⁱ'};
+const SUBM={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉','+':'₊','-':'₋','−':'₋','=':'₌','(':'₍',')':'₎'};
+function cv(str,up){
+  const m=up?SUPM:SUBM,s=str.trim();
+  if(s&&[...s].every(c=>m[c]))return[...s].map(c=>m[c]).join('');
+  return(up?'^(':'_(')+s+')';
+}
+function fixScripts(items,styles){
+  if(!on()||!styles||!Object.keys(styles).length)return items;
+  const arr=items.map(it=>({...it,_x:it.transform?it.transform[4]:0,_y:it.transform?it.transform[5]:0,_fs:it.transform?Math.hypot(it.transform[2],it.transform[3]):0,_dead:false}));
+  arr.filter(a=>a.str&&a._fs>0).sort((a,b)=>a._x-b._x).forEach(s=>{
+    let best=null,bd=1e9;
+    arr.forEach(b=>{
+      if(b===s||b._dead||!b.str.trim()||b._fs<=s._fs*1.18)return;
+      const gap=s._x-(b._x+b.width);
+      if(gap<-b._fs*0.4||gap>b._fs*0.5)return;
+      const dy=s._y-b._y;
+      if((dy>b._fs*0.15&&dy<b._fs*0.9)||(dy<-b._fs*0.08&&dy>-b._fs*0.5)){
+        if(Math.abs(gap)<bd){bd=Math.abs(gap);best=b;}
+      }
+    });
+    if(!best)return;
+    best.str=best.str.replace(/\s+$/,'')+cv(s.str,s._y>best._y);
+    best.width=(s._x+s.width)-best._x;
+    s._dead=true;
+  });
+  return arr.filter(a=>!a._dead);
+}
+const _bpb=buildPdfBlocks;
+function toScript(str,up){
+  const s=str.trim();
+  if(!s)return null;
+  const m=up?SUPM:SUBM;
+  let out='';
+  for(const c of s){if(!m[c])return null;out+=m[c];}
+  return out;
+}
+function fixScripts2(items,styles){
+  if(!on()||!styles||!Object.keys(styles).length)return items;
+  const arr=items.map(it=>({...it,_x:it.transform?it.transform[4]:0,_y:it.transform?it.transform[5]:0,_fs:it.transform?Math.hypot(it.transform[2],it.transform[3]):0,_dead:false}));
+  arr.filter(a=>a.str&&a.str.trim()&&a._fs>0).sort((a,b)=>a._x-b._x).forEach(s=>{
+    let best=null,bd=1e9;
+    arr.forEach(b=>{
+      if(b===s||b._dead||!b.str.trim()||b._fs<=s._fs*1.18)return;
+      const gap=s._x-(b._x+b.width);
+      if(gap<-b._fs*0.4||gap>b._fs*0.5)return;
+      const dy=s._y-b._y;
+      if((dy>b._fs*0.15&&dy<b._fs*0.9)||(dy<-b._fs*0.08&&dy>-b._fs*0.5)){
+        if(Math.abs(gap)<bd){bd=Math.abs(gap);best=b;}
+      }
+    });
+    if(!best)return;
+    const sc=toScript(s.str,s._y>best._y);
+    if(sc===null)return;               // không đổi được sang chỉ số → để nguyên, KHÔNG nhét ^( ) _( )
+    best.str=best.str.replace(/\s+$/,'')+sc;
+    best.width=(s._x+s.width)-best._x;
+    s._dead=true;
+  });
+  return arr.filter(a=>!a._dead);
+}
+buildPdfBlocks=function(items,viewport,styles){return _bpb(fixScripts2(items,styles),viewport,styles);};
+/* 5. Word / PPTX: đoạn không đổi thì KHÔNG ghi đè (giữ chỉ số trên/dưới) */
+docxApply=function(p,trs){
+  docxSegments(p).forEach((seg,i)=>{
+    const t=trs[i];if(!t)return;
+    const o=seg.map(x=>x.textContent).join('');
+    if(t===o||t===o.trim())return;
+    seg[0].textContent=t;
+    seg[0].setAttributeNS('http://www.w3.org/XML/1998/namespace','xml:space','preserve');
+    for(let k=1;k<seg.length;k++)seg[k].textContent='';
+  });
+};
+pptxApply=function(p,trs){
+  pptxSegments(p).forEach((seg,i)=>{
+    const t=trs[i];if(!t)return;
+    const o=seg.map(x=>x.textContent).join('');
+    if(t===o||t===o.trim())return;
+    seg[0].textContent=t;
+    for(let k=1;k<seg.length;k++)seg[k].textContent='';
+  });
+};
+
+/* 6. Tab Hình ảnh (AI đọc ảnh): thêm luật giữ công thức */
+const _cvis=callVision;
+callVision=function(item,prompt){
+  return _cvis(item,on()?prompt+'\n\nLƯU Ý KHOA HỌC: Phiên âm đúng mọi công thức, ký hiệu, đơn vị, số mũ (dùng Unicode như 10⁻¹⁰, m², H₂O hoặc LaTeX). Trong phần "translation" CHỈ dịch phần chữ thường, giữ nguyên công thức và đơn vị y hệt bản gốc.':prompt);
+};
+})();
+/* ═══ CHẶN VẼ ĐÈ CÔNG THỨC / NHÃN + THUẬT NGỮ GIÁO TRÌNH ═══ */
+(function(){
+  const FN=/^(sqrt|arcsin|arccos|arctan|sinh|cosh|tanh|exp|lim)$/i;
+  function isFormulaOrLabel(t){
+    t=(t||'').trim();
+    const letters=(t.match(/\p{L}/gu)||[]).length;
+    if(letters<=2)return true;                                   // N, W, E, S, (a), i, j...
+    const words=(t.match(/\p{L}{4,}/gu)||[]).filter(w=>!FN.test(w));
+    if(!words.length&&/[\d=+×÷−\/^_]/.test(t))return true;       // 60 km/h = 16.7 m/s ...
+    const nonSpace=t.replace(/\s/g,'').length||1;
+    if(letters/nonSpace<0.35&&words.length<3)return true;        // dòng toàn ký hiệu
+    return false;
+  }
+  const _d=drawTranslatedBlock;
+  drawTranslatedBlock=function(oc,tc,cw,ch,b,translated,fi){
+    if(isFormulaOrLabel(b.text))return;                          // giữ nguyên bản gốc
+    if(/[\^_]\(|□|ZQ\s?\d+\s?Q/.test(translated))return;         // bản dịch bị hỏng → giữ gốc
+    return _d.apply(this,arguments);
+  };
+
+  const _g=buildGlossaryNote;
+  buildGlossaryNote=function(){
+    let n=_g();
+    const tgt=document.getElementById('tgtLang')?.value||document.getElementById('tgtLang2')?.value;
+    if(tgt==='tiếng Việt')n+=`\n\nThuật ngữ giáo trình (khi là tiêu đề mục): PICTURE→"HÌNH DUNG", SOLVE→"GIẢI", CHECK→"KIỂM TRA", TAKING IT FURTHER→"MỞ RỘNG", PRACTICE PROBLEM→"BÀI TẬP LUYỆN", PROBLEM-SOLVING STRATEGY→"CHIẾN LƯỢC GIẢI BÀI TẬP", Example→"Ví dụ", FIGURE→"HÌNH", Relative Velocity→"Vận tốc tương đối".`;
+    return n;
+  };
+})();
+/* ═══════════ v4: GIỮ CÔNG THỨC DẠNG HÌNH + TRANG DỊCH NÉT ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+const sci=()=>!!$('sciMode')?.checked;
+
+/* ── 0. Ô chọn độ nét ── */
+(function(){
+  const dz=$('dropZone');
+  if(!dz||$('pdfSharp'))return;
+  dz.insertAdjacentHTML('beforebegin',`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:var(--radius-xs)">
+    <span style="font-size:12px;font-weight:700;color:#166534;white-space:nowrap">✨ Độ nét trang dịch:</span>
+    <select id="pdfSharp" style="padding:6px 10px;border:1.5px solid #bbf7d0;border-radius:var(--radius-xs);font-size:12px;outline:none;background:#fff">
+      <option value="2">Nhanh (2×)</option>
+      <option value="3" selected>Nét (3×) – khuyên dùng</option>
+      <option value="4">Siêu nét (4×, tốn RAM)</option>
+    </select></div>`);
+  const s=$('pdfSharp'),v=localStorage.getItem('tx_sharp');
+  if(v&&[...s.options].some(o=>o.value===v))s.value=v;
+  s.onchange=()=>localStorage.setItem('tx_sharp',s.value);
+})();
+const sharp=()=>parseFloat($('pdfSharp')?.value)||3;
+
+/* ── 1. Nhận diện công thức theo từng ký tự trong PDF ── */
+const MATHFONT=/math|symbol|cmmi|cmsy|cmex|msbm|msam|mtmi|mtsy|mtex|mtextra|euclid|stix|wasy|esint|mathpi|lmmi|lmsy|txmi|txsy|pxmi|pxsy|wingding/i;
+const MCH=/[\u0300-\u036f\u0370-\u03ff\u02c6-\u02df\u2032-\u2037\u2070-\u209f\u20d0-\u20ff\u2100-\u214f\u2190-\u23ff\u27c0-\u27ef\u2980-\u2aff\ue000-\uf8ff\ufffd\u00a8\u00af\u00b0\u00b1\u00b4\u00b5\u00b7\u00d7\u00f7\u{1d400}-\u{1d7ff}]/u;
+const ACC=/^[\u0300-\u036f\u20d0-\u20ff\u02c6-\u02df\u00a8\u00af\u00b4\u2190-\u21ff\^~`]$/;
+const OP=/^[=+\u2212\u00d7\u00f7<>\u2248\u2260\u2264\u2265\u00b1\u00b7*\u221d\u2192\u2190\u21d2\u21d4|]+$/;
+const HEAD=/^[A-Z][a-z]?\)?$/, CHEM=/^[A-Z][a-z]?\d?$|^[()]$/;
+
+function mathPrep(page,content,vp){
+  const U=pdfjsLib.Util,S=vp.scale,fc={};
+  const rf=fn=>{
+    if(!fc[fn]){let n='',it=false;
+      try{const f=page.commonObjs.get(fn);n=f.name||'';it=!!f.italic;}catch(e){}
+      fc[fn]={n,it:it||/ital|obli|[-,]it$|mmi|cmti|mathit/i.test(n)};}
+    return fc[fn];
+  };
+  const arr=[];
+  content.items.forEach((it,idx)=>{
+    if(typeof it.str!=='string'||!it.transform)return;
+    const t=U.transform(vp.transform,it.transform),fs=Math.hypot(t[2],t[3]);
+    if(!fs||Math.abs(t[1])>Math.abs(t[0])*0.2)return;
+    arr.push({it,idx,t:it.str.normalize('NFC').trim(),x:t[4],y:t[5],w:it.width*S,fs,fn:it.fontName,m:false,acc:false,sc:false,op:false,chem:false});
+  });
+  const cnt={};arr.forEach(a=>{if(a.t)cnt[a.fn]=(cnt[a.fn]||0)+a.t.length;});
+  const bodyFn=Object.keys(cnt).sort((p,q)=>cnt[q]-cnt[p])[0];
+  if(!bodyFn)return{items:content.items,spans:[]};
+
+  // (a) ứng viên công thức ban đầu
+  arr.forEach(a=>{
+    if(!a.t)return;
+    const f=rf(a.fn);
+    if((a.t.length<=8&&MCH.test(a.t))||(a.fn!==bodyFn&&a.t.length<=12&&MATHFONT.test(f.n)))a.m=true;
+    else if(f.it&&a.fn!==bodyFn&&(/^\p{L}$/u.test(a.t)||(a.t.length<=2&&/mmi|math/i.test(f.n))))a.m=true;
+    else if(/^[\^~`]$/.test(a.t))a.m=true;
+    if(a.m&&ACC.test(a.t))a.acc=true;
+    if(a.m&&OP.test(a.t))a.op=true;
+  });
+
+  // (b) mở rộng: chỉ số trên/dưới, toán tử, số sau toán tử, ngoặc, hóa học
+  for(let pass=0;pass<4;pass++){
+    let ch=false;const ms=arr.filter(b=>b.m&&!b.acc);
+    arr.forEach(a=>{
+      if(a.m||!a.t)return;
+      const t=a.t,set=k=>{a.m=true;a[k]=true;ch=true;};
+      if(t.length<=6&&/^[\p{L}\p{N}+\-\u2212=(),.\u2032']+$/u.test(t)){
+        for(const b of ms){
+          if(b.fs<a.fs*1.15)continue;
+          const gap=a.x-(b.x+b.w),dy=a.y-b.y;
+          if(gap>-b.fs*0.6&&gap<b.fs*0.45&&((dy>b.fs*0.12&&dy<b.fs*0.65)||(dy<-b.fs*0.2&&dy>-b.fs*0.75))){set('sc');return;}
+        }
+        if(/^[\d+\-\u2212]{1,3}$/.test(t)){            // H₂, SO₄, Na⁺ ...
+          for(const b of arr){
+            if(b===a||b.m||!HEAD.test(b.t)||b.fs<a.fs*1.15)continue;
+            const gap=a.x-(b.x+b.w),dy=a.y-b.y;
+            if(gap>-b.fs*0.4&&gap<b.fs*0.3&&((dy>b.fs*0.12&&dy<b.fs*0.65)||(dy<-b.fs*0.2&&dy>-b.fs*0.75))){b.m=true;b.chem=true;set('sc');a.chem=true;return;}
+          }
+        }
+      }
+      if(OP.test(t)){
+        for(const b of ms){
+          if(Math.abs(a.y-b.y)>Math.max(a.fs,b.fs)*0.5)continue;
+          const g1=a.x-(b.x+b.w),g2=b.x-(a.x+a.w);
+          if((g1>-a.fs*0.3&&g1<a.fs*0.9)||(g2>-a.fs*0.3&&g2<a.fs*0.9)){set('op');return;}
+        }
+      }else if(/^[\d.,]+$/.test(t)){
+        for(const b of ms){
+          if(!b.op)continue;
+          const g=a.x-(b.x+b.w);
+          if(g>-a.fs*0.3&&g<a.fs*0.9&&Math.abs(a.y-b.y)<a.fs*0.5){set('num');return;}
+        }
+      }else if(/^[()\[\]{}]$/.test(t)){
+        for(const b of ms){
+          if(Math.abs(a.y-b.y)>Math.max(a.fs,b.fs)*0.5)continue;
+          const g1=a.x-(b.x+b.w),g2=b.x-(a.x+a.w);
+          if((g1>-a.fs*0.3&&g1<a.fs*0.35)||(g2>-a.fs*0.3&&g2<a.fs*0.35)){set('par');return;}
+        }
+      }
+      if(CHEM.test(t)){
+        for(const b of ms){
+          if(!b.chem)continue;
+          const g=a.x-(b.x+b.w);
+          if(g>-a.fs*0.2&&g<a.fs*0.2&&Math.abs(a.y-b.y)<a.fs*0.4){a.m=true;a.chem=true;ch=true;return;}
+        }
+      }
+    });
+    if(!ch)break;
+  }
+
+  // (c) gom thành cụm công thức (span)
+  const main=arr.filter(a=>a.m&&!a.acc).sort((p,q)=>p.x-q.x||q.fs-p.fs);
+  const spans=[];
+  main.forEach(a=>{
+    let c=null;
+    for(let k=spans.length-1;k>=0;k--){
+      const s=spans[k];
+      if(Math.abs(a.y-s.by)<s.f*0.75&&a.x-s.r<=s.f*0.6&&a.x>=s.l-s.f){c=s;break;}
+    }
+    if(!c){c={items:[],l:a.x,r:a.x+a.w,by:a.y,f:a.fs};spans.push(c);}
+    c.items.push(a);c.l=Math.min(c.l,a.x);c.r=Math.max(c.r,a.x+a.w);
+  });
+  arr.filter(a=>a.m&&a.acc).forEach(a=>{          // mũi tên vector / dấu trên đầu
+    let best=null,bd=1e9;const cx=a.x+a.w/2;
+    spans.forEach(s=>{
+      const dy=a.y-s.by;
+      if(cx>=s.l-s.f*0.4&&cx<=s.r+s.f*0.4&&dy>-s.f*1.4&&dy<s.f*0.3){const d=Math.abs(cx-(s.l+s.r)/2);if(d<bd){bd=d;best=s;}}
+    });
+    if(best){best.items.push(a);best.l=Math.min(best.l,a.x);best.r=Math.max(best.r,a.x+a.w);}
+    else spans.push({items:[a],l:a.x,r:a.x+a.w,by:a.y,f:a.fs});
+  });
+
+  // (d) khung cắt cho từng cụm
+  const W=vp.width,H=vp.height,dead=new Set();
+  spans.forEach((s,i)=>{
+    s.items.forEach(a=>dead.add(a.idx));
+    const t=s.items.filter(a=>!a.sc&&!a.acc).sort((p,q)=>q.fs-p.fs)[0]||s.items[0];
+    s.id=i;s.tpl=t;s.base=t.y;s.fs=t.fs;
+    let x0=1e9,x1=-1e9,y0=s.base-s.fs*1.05,y1=s.base+s.fs*0.28;
+    s.items.forEach(a=>{x0=Math.min(x0,a.x);x1=Math.max(x1,a.x+a.w);y0=Math.min(y0,a.y-a.fs*0.8);y1=Math.max(y1,a.y+a.fs*0.25);});
+    y0=Math.max(y0,s.base-s.fs*1.25);
+    const p=Math.max(1,s.fs*0.05);
+    s.x0=x0;s.x1=x1;
+    s.cx0=Math.max(0,x0-p);s.cx1=Math.min(W,x1+p);s.cy0=Math.max(0,y0-1);s.cy1=Math.min(H,y1+1);
+  });
+
+  // (e) thay mỗi cụm bằng 1 "mã" XQ<n>Z để đi qua bước dịch
+  const syn=spans.map(s=>{
+    let nb=null,bd=1e9;
+    arr.forEach(a=>{
+      if(a.m||a.t.length<3||Math.abs(a.y-s.base)>s.fs*0.5)return;
+      const d=Math.min(Math.abs(a.x-s.x1),Math.abs(a.x+a.w-s.x0));
+      if(d<bd){bd=d;nb=a;}
+    });
+    const fn=nb?nb.fn:bodyFn,fs=nb?nb.fs:s.fs,k=fs/s.tpl.fs,tr=s.tpl.it.transform.slice();
+    for(let i=0;i<4;i++)tr[i]*=k;
+    tr[4]+=(s.x0-s.tpl.x)/S;
+    return{str:'XQ'+s.id+'Z',dir:'ltr',width:(s.x1-s.x0)/S,height:s.tpl.it.height,transform:tr,fontName:fn,hasEOL:false};
+  });
+  return{items:content.items.filter((it,idx)=>!dead.has(idx)).concat(syn),spans};
+}
+
+function attachSpans(blocks,spans){
+  if(!spans.length)return;
+  blocks.forEach(b=>{
+    if(!/XQ\d+Z/.test(b.text))return;
+    b.spans=spans;
+    const re=/XQ(\d+)Z/g;let m;
+    while((m=re.exec(b.text))){                     // xoá sạch cả mũi tên/chỉ số nhô ra ngoài dòng
+      const s=spans[+m[1]];if(!s)continue;
+      if(Math.abs(s.base-b.base)<b.fs*0.6)b.y0=Math.min(b.y0,s.cy0);
+      if(Math.abs(s.base-b.lastY)<b.fs*0.6)b.y1=Math.max(b.y1,s.cy1);
+    }
+  });
+}
+
+/* ── 2. Vẽ câu dịch + dán hình công thức gốc vào đúng chỗ ── */
+const CJK=/[\u3040-\u9fff\uac00-\ud7af]/;
+function drawRich(oc,tc,cw,ch,b,translated,fi){
+  if(/ZQ\s?\d+\s?Q|[\^_]\(|□/.test(translated))return;
+  if(((translated.replace(/XQ\d+Z/g,'').match(/\p{L}/gu))||[]).length<2)return;   // khối toàn công thức → giữ nguyên
+  const spans=b.spans,pad=2;
+  const fontOf=fs=>`${fi.italic?'italic ':''}${fi.bold?'bold ':''}${fs}px ${fi.serif?'"Times New Roman",Georgia,serif':'Arial,"Segoe UI",sans-serif'}`;
+  const x=Math.max(0,b.x0-pad),y=Math.max(0,b.y0-pad),origW=(b.x1-b.x0)+pad*2,h=(b.y1-b.y0)+pad*2;
+  const bg=sampleBg(oc,cw,ch,x,y,origW,h);
+  const col=sampleTextColor(oc,cw,ch,x,y,origW,h,bg.rgb)||(bg.dark?'#ffffff':'#111111');
+  const atoms=[];let sp=false;
+  translated.split(/(XQ\d+Z)/).forEach(piece=>{
+    const mt=piece.match(/^XQ(\d+)Z$/);
+    if(mt){const s=spans[+mt[1]];if(s)atoms.push({s,sp});sp=false;return;}
+    piece.split(/(\s+)/).forEach(w=>{
+      if(!w)return;
+      if(/^\s+$/.test(w)){sp=true;return;}
+      if(CJK.test(w)){[...w].forEach(c=>atoms.push({t:c,sp:true,cj:true}));sp=false;return;}
+      atoms.push({t:w,sp});sp=false;
+    });
+  });
+  if(!atoms.length)return;
+  const lay=fs=>{
+    tc.font=fontOf(fs);
+    const r=fs/b.fs,sw=tc.measureText(' ').width;
+    const maxW=(b.n===1?Math.max(origW,(b.maxX||cw)-x):origW)-pad*2;
+    const lines=[];let cur=[],w=0;
+    atoms.forEach(a=>{
+      const aw=a.s?(a.s.x1-a.s.x0)*r:tc.measureText(a.t).width;
+      const g=(cur.length&&a.sp&&!a.cj)?sw:0;
+      if(b.n>1&&cur.length&&a.sp&&w+g+aw>maxW){lines.push({a:cur,w});cur=[];w=0;}
+      const g2=(cur.length&&a.sp&&!a.cj)?sw:0;
+      cur.push({a,aw,g:g2});w+=g2+aw;
+    });
+    if(cur.length)lines.push({a:cur,w});
+    return{lines,r,maxW,fs};
+  };
+  const ok=L=>L.lines.length&&(b.n===1?L.lines[0].w<=L.maxW:L.lines.length<=b.n);
+  const minFs=Math.max(5,b.fs*0.55);
+  let L=lay(b.fs);
+  for(let fs=b.fs-0.5;!ok(L)&&fs>=minFs;fs-=0.5)L=lay(fs);
+  if(!L.lines.length)return;
+  const widest=Math.max(...L.lines.map(l=>l.w))+pad*2;
+  tc.fillStyle=bg.css;
+  tc.fillRect(x,y,b.n===1?Math.min(Math.max(origW,widest),cw-x):origW,h);
+  tc.font=fontOf(L.fs);tc.textBaseline='alphabetic';tc.fillStyle=col;
+  tc.imageSmoothingEnabled=true;tc.imageSmoothingQuality='high';
+  L.lines.forEach((ln,i)=>{
+    let px=x+pad;const base=b.base+i*b.pitch;
+    ln.a.forEach(it=>{
+      px+=it.g;
+      if(it.a.s){
+        const s=it.a.s,r=L.r;
+        tc.drawImage(oc.canvas,s.cx0,s.cy0,s.cx1-s.cx0,s.cy1-s.cy0,
+          px-(s.x0-s.cx0)*r,base-(s.base-s.cy0)*r,(s.cx1-s.cx0)*r,(s.cy1-s.cy0)*r);
+      }else tc.fillText(it.a.t,px,base);
+      px+=it.aw;
+    });
+  });
+}
+const _d=drawTranslatedBlock;
+drawTranslatedBlock=function(oc,tc,cw,ch,b,t,fi){
+  if(b&&b.spans&&/XQ\d+Z/.test(b.text||''))return drawRich(oc,tc,cw,ch,b,t,fi);
+  return _d.apply(this,arguments);
+};
+
+/* ── 3. Xử lý 1 trang PDF: render nét hơn + giữ công thức ── */
+const inter=(a,b,pad)=>{
+  pad=pad||0;
+  const w=Math.min(a.x1,b.x1+pad)-Math.max(a.x0,b.x0-pad),h=Math.min(a.y1,b.y1+pad)-Math.max(a.y0,b.y0-pad);
+  return(w>0&&h>0)?w*h:0;
+};
+const area=b=>Math.max(1,(b.x1-b.x0)*(b.y1-b.y0));
+const scaleBlk=(b,k)=>{for(const key in b){if(typeof b[key]==='number'&&key!=='n')b[key]*=k;}};
+async function ocrExtras(page,src,state,textBlocks,SC,r){
+  const OS=Math.max(2.4,Math.min(SC,3));
+  const big=Math.abs(OS-SC)<0.01?r:await renderPdfPage(page,OS);
+  window.__ocrPsm='11';let raw;
+  try{raw=await ocrBlocks(big.canvas,src,state);}finally{window.__ocrPsm='3';}
+  const k=SC/OS;
+  if(k!==1)raw.forEach(b=>scaleBlk(b,k));
+  return raw.filter(b=>(b.text.match(/\p{L}/gu)||[]).length>=2&&!textBlocks.some(t=>inter(b,t,4)>0.08*area(b)));
+}
+
+processPdfPage=async function(page,src,tgt,state){
+  const SC=sharp();
+  let r=await renderPdfPage(page,SC);
+  const content=await page.getTextContent();
+  let items=content.items,spans=[];
+  if(sci()){try{const m=mathPrep(page,content,r.vp);items=m.items;spans=m.spans;}catch(e){console.warn('mathPrep:',e);}}
+  let blocks=buildPdfBlocks(items,r.vp,content.styles),ocr=false,imgCount=0;
+  const mode=$('pdfImgOcr')?.value||'all';
+  if(!blocks.length){
+    setStatus('stat1','🔍 Trang không có lớp chữ — đang OCR (lần đầu tải dữ liệu ngôn ngữ, hơi lâu)...','info');
+    window.__ocrPsm='3';
+    r=await renderPdfPage(page,Math.max(SC,2.2));
+    blocks=await ocrBlocks(r.canvas,src,state);ocr=true;
+  }else{
+    attachSpans(blocks,spans);
+    if(mode!=='off'){
+      setStatus('stat1','🖼️ Đang OCR chữ trong hình/sơ đồ (lần đầu tải dữ liệu ngôn ngữ)...','info');
+      try{const extra=await ocrExtras(page,src,state,blocks.slice(),SC,r);imgCount=extra.length;blocks=blocks.concat(extra);}
+      catch(e){toast('⚠️ OCR hình lỗi: '+e.message,'error');console.error(e);}
+    }
+  }
+  const trans=document.createElement('canvas');
+  trans.width=r.canvas.width;trans.height=r.canvas.height;
+  trans.getContext('2d').drawImage(r.canvas,0,0);
+  const fcache={};
+  blocks.forEach(b=>{
+    b.fi=(b.fn&&b.fn.indexOf('ocr_')===0)?{bold:b.fn[4]==='1',italic:b.fn[5]==='1',serif:false}:getPdfFontInfo(page,content.styles,b.fn,fcache);
+  });
+  const rec={orig:r.canvas,trans,blocks,ocr,imgOcr:imgCount,w1:r.vp.width/r.vp.scale,h1:r.vp.height/r.vp.scale};
+  if(blocks.length){
+    const out=await translateCellArray(blocks.map(b=>b.text),src,tgt,tone1);
+    paintPdfPage(rec,out);
+  }
+  if(imgCount)toast(`🖼️ Tìm thấy ${imgCount} đoạn chữ trong hình và đã dịch`,'info');
+  return rec;
+};
 })();
 init();
 </script>
