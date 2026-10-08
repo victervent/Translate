@@ -8602,32 +8602,75 @@ function chunkText(t){
   if(cur)out.push(cur);
   return out.filter(s=>/[\p{L}\p{N}]/u.test(s));        // bỏ đoạn chỉ toàn dấu → không còn lỗi im lặng
 }
+/* ===== FIX 3: chỉ dùng giọng máy, báo lỗi rõ ===== */
+/* ===== FIX 4: bổ sung hàm còn thiếu + đọc ổn định ===== */
+const VOICES={list:[]};
+function loadVoices(){
+  return new Promise(res=>{
+    const get=()=>{const v=speechSynthesis.getVoices();if(v.length){VOICES.list=v;return true;}return false;};
+    if(get())return res(VOICES.list);
+    const t=setTimeout(()=>res(VOICES.list),2500);
+    const f=()=>{if(get()){clearTimeout(t);speechSynthesis.removeEventListener('voiceschanged',f);res(VOICES.list);}};
+    speechSynthesis.addEventListener('voiceschanged',f);
+  });
+}
+const SW={
+  'en-US':/\b(the|and|of|is|are|to|in|that|with|for|this|it|on|as|by|was|be)\b/gi,
+  'fr-FR':/\b(le|la|les|des|est|une|un|et|du|que|pour|dans|qui|au|pas|sur)\b/gi,
+  'de-DE':/\b(der|die|das|und|ist|nicht|mit|ein|eine|den|von|zu|für|auf|sich)\b/gi,
+  'es-ES':/\b(el|los|las|una|es|que|por|con|para|del|se|en|y)\b/gi
+};
+function guessLang(s,fallback){
+  const L=(s.match(/\p{L}/gu)||[]).length;
+  if(!L)return fallback;
+  const c=re=>(s.match(re)||[]).length;
+  if(c(/[\u3040-\u30ff]/g)>0)return 'ja-JP';
+  if(c(/[\uac00-\ud7af]/g)>0)return 'ko-KR';
+  if(c(/[\u4e00-\u9fff]/g)>0)return 'zh-CN';
+  if(c(/[\u0400-\u04ff]/g)/L>0.3)return 'ru-RU';
+  if(c(/[ăđơưĂĐƠƯ\u1ea0-\u1ef9]/g)>=2)return 'vi-VN';
+  let best=null,bs=1;
+  for(const k in SW){const n=c(SW[k]);if(n>bs){bs=n;best=k;}}
+  if(best)return (best==='en-US'&&/^en/i.test(fallback))?fallback:best;
+  return fallback;
+}
+function pickVoice(lang,name){
+  const vs=VOICES.list.length?VOICES.list:speechSynthesis.getVoices(),p=lang.slice(0,2).toLowerCase();
+  if(name){const v=vs.find(v=>v.name===name&&norm(v.lang).startsWith(p));if(v)return v;}
+  const exact=vs.filter(v=>norm(v.lang)===norm(lang)),pre=vs.filter(v=>norm(v.lang).startsWith(p));
+  const pool=exact.length?exact:pre;
+  return pool.find(v=>/natural|online/i.test(v.name))||pool.find(v=>/google/i.test(v.name))||pool[0]||null;
+}
 function say(text,lang,voiceName,rate,tok){
   return new Promise(res=>{
-    const ch=chunkText(text);let i=0;
-    const next=()=>{
-      if(E.tok!==tok||i>=ch.length)return res();
-      const s=ch[i++];
-      try{speechSynthesis.resume();}catch(e){}
-      const u=new SpeechSynthesisUtterance(s);
-      u.lang=lang;u.rate=rate;
-      const v=pickVoice(lang,voiceName);if(v)u.voice=v;
-      let done=false,timedOut=false,w=null;
-      const fin=()=>{if(done)return;done=true;clearTimeout(w);setTimeout(next,40);};
-      const arm=()=>{clearTimeout(w);w=setTimeout(()=>{
-        if(E.paused){arm();return;}
-        timedOut=true;try{speechSynthesis.cancel();}catch(e){}fin();
-      },9000+s.length*160/rate);};
-      u.onstart=arm;
-      u.onend=fin;
-      u.onerror=e=>{
-        if(timedOut)return;
-        if(e.error==='canceled'||e.error==='interrupted'){clearTimeout(w);done=true;return res();}
-        fin();                                           // lỗi giọng/ký tự lạ → bỏ đoạn này, đọc tiếp
+    loadVoices().then(()=>{
+      const ch=chunkText(text);let i=0;
+      const next=()=>{
+        if(E.tok!==tok||i>=ch.length)return res();
+        const s=ch[i++];
+        const lg=guessLang(s,lang);
+        const v=pickVoice(lg,lg===lang?voiceName:'');
+        const hasRight=v&&norm(v.lang).startsWith(lg.slice(0,2).toLowerCase());
+        if(!hasRight&&!window['__w'+lg]){
+          window['__w'+lg]=1;
+          alert('Máy bạn CHƯA CÓ giọng đọc cho '+lg+'.\nHãy dùng Microsoft Edge (có giọng Việt online) hoặc cài giọng Vietnamese trong Cài đặt Windows.');
+        }
+        try{speechSynthesis.resume();}catch(e){}
+        const u=new SpeechSynthesisUtterance(s);
+        u.lang=hasRight?v.lang:lg;u.rate=rate;u.volume=1;
+        if(hasRight)u.voice=v;
+        let done=false;
+        const fin=()=>{if(done)return;done=true;clearTimeout(w);setTimeout(next,40);};
+        const w=setTimeout(fin,9000+s.length*160/rate);
+        u.onend=fin;
+        u.onerror=e=>{
+          if(e.error==='canceled'||e.error==='interrupted'){done=true;clearTimeout(w);return res();}
+          console.warn('TTS lỗi:',e.error);toast('❌ Lỗi đọc: '+e.error,'error');fin();
+        };
+        speechSynthesis.speak(u);
       };
-      arm();speechSynthesis.speak(u);
-    };
-    next();
+      next();
+    });
   });
 }
 async function toLang(text,kind,which,lang,tok){
@@ -8880,7 +8923,140 @@ pdfItemsToText=function(items){
   return res;
 };
 })();
+/* ═══════════ BOT TÙY CHỈNH: tự thêm link API bot mới ═══════════ */
+(function(){
+const $=id=>document.getElementById(id);
+const LS='tx_custom_bots';
+let bots=[];
+try{bots=JSON.parse(localStorage.getItem(LS)||'[]')||[];}catch(e){bots=[];}
+const saveBots=()=>localStorage.setItem(LS,JSON.stringify(bots));
+const cleanBase=u=>String(u||'').trim().replace(/\/+$/,'').replace(/\/chat\/completions$/,'');
+const getBot=id=>bots.find(b=>b.id===id);
 
+/* ── đăng ký 1 bot: tạo MODELS + thẻ chọn AI ── */
+function register(b){
+  const cached=(()=>{try{return JSON.parse(localStorage.getItem('tx_models_'+b.id)||'null');}catch(e){return null;}})();
+  MODELS[b.id]=(cached&&cached.length)?cached:[[b.model,b.model]];
+  if(!MODELS[b.id].some(m=>m[0]===b.model))MODELS[b.id].unshift([b.model,b.model]);
+  const grid=document.querySelector('.provider-grid');
+  if(grid&&![...grid.children].some(c=>(c.getAttribute('onclick')||'').includes("'"+b.id+"'"))){
+    grid.insertAdjacentHTML('beforeend',`<div class="provider-card" onclick="selectProvider('${b.id}',this)"><span class="p-logo">${escHtml(b.icon||'🤖')}</span><div class="p-name">${escHtml(b.name)}</div></div>`);
+  }
+}
+const cardOf=id=>[...document.querySelectorAll('.provider-card')].find(c=>(c.getAttribute('onclick')||'').includes("'"+id+"'"));
+
+/* ── lấy danh sách model từ link /models ── */
+async function fetchModels(b){
+  const key=getKey(b.id);
+  const r=await fetch(b.base+'/models',{headers:key?{Authorization:'Bearer '+key}:{}});
+  if(!r.ok)throw new Error(await errMsg(r,b.name));
+  const d=await r.json();
+  const arr=(d.data||d.models||[]);
+  let list=arr.map(m=>typeof m==='string'?m:(m.id||m.name)).filter(Boolean)
+    .filter(id=>!/(embed|whisper|tts|moderation|rerank)/i.test(id)).sort().map(id=>[id,id]);
+  if(!list.length)throw new Error('Link không trả về model nào');
+  localStorage.setItem('tx_models_'+b.id,JSON.stringify(list));
+  MODELS[b.id]=list;
+  return list.length;
+}
+
+/* ── nối vào hệ thống gọi AI ── */
+const _raw=callRaw,_ai=callAI,_rm=refreshModels;
+callRaw=function(prompt,on){
+  const b=getBot(currentProvider);if(!b)return _raw(prompt,on);
+  const k=getKey(b.id);
+  return callChatCompat(b.name,b.base+'/chat/completions',k,getModel(b.id),prompt,on,'max_tokens',8192);
+};
+callAI=function(t,s,tg,tone,on){
+  if(getBot(currentProvider))return callRaw(buildPrompt(t,s,tg,tone),on);
+  return _ai(t,s,tg,tone,on);
+};
+refreshModels=async function(){
+  const b=getBot(currentProvider);if(!b)return _rm();
+  try{
+    toast('⏳ Đang lấy model của '+b.name+'...','info');
+    const n=await fetchModels(b);
+    const sel=$('modelSelect');
+    sel.innerHTML=MODELS[b.id].map(([v])=>`<option value="${v}">${v}</option>`).join('');
+    if(MODELS[b.id].some(m=>m[0]===b.model))sel.value=b.model;
+    toast(`✅ ${b.name}: ${n} model`,'success');
+  }catch(e){toast('❌ '+e.message+' (nếu báo CORS/Failed to fetch: nhà cung cấp chặn gọi từ trình duyệt)','error');}
+};
+
+/* ── giao diện trong Cài đặt ── */
+const inp='width:100%;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:12.5px;outline:none;background:#fff';
+const grp=[...$('panel-settings').querySelectorAll('.settings-group')][1]||$('panel-settings').lastElementChild;
+grp.insertAdjacentHTML('afterend',`<div class="settings-group" id="cbGroup"><h3>🤖 Bot tùy chỉnh (thêm AI mới bằng link API)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input type="text" id="cbName" placeholder="Tên bot (VD: Together)" style="${inp}">
+    <input type="text" id="cbIcon" placeholder="Biểu tượng emoji (tuỳ chọn)" style="${inp}">
+    <input type="text" id="cbUrl" placeholder="Link API (VD: https://api.together.xyz/v1)" style="${inp};grid-column:1/-1">
+    <input type="password" id="cbKey" placeholder="API key" autocomplete="off" style="${inp}">
+    <input type="text" id="cbModel" placeholder="Tên model mặc định (VD: meta-llama/Llama-3.3-70B)" style="${inp}">
+    <input type="text" id="cbGet" placeholder="Link trang lấy key (tuỳ chọn)" style="${inp};grid-column:1/-1">
+  </div>
+  <button class="primary-btn" id="cbAdd" style="margin-top:10px">➕ Thêm bot</button>
+  <div id="cbList" style="margin-top:12px;display:grid;gap:8px"></div>
+  <p style="font-size:11px;color:var(--gray-400);margin-top:8px;line-height:1.6">Chỉ hỗ trợ bot theo chuẩn OpenAI (đường dẫn <code>/chat/completions</code>): Together, Fireworks, Cerebras, SiliconFlow, Perplexity, Ollama (<code>http://localhost:11434/v1</code>), LM Studio... Link chỉ cần đến phần <code>/v1</code>. Key lưu trong trình duyệt của bạn.</p></div>`);
+
+function render(){
+  $('cbList').innerHTML=bots.length?bots.map(b=>`<div class="file-row" style="flex-wrap:wrap" data-id="${b.id}">
+    <span class="file-icon">${escHtml(b.icon||'🤖')}</span>
+    <div class="file-info"><div class="file-name">${escHtml(b.name)} ${getKey(b.id)?'<span class="status-dot dot-ok"></span>':'<span class="status-dot dot-no"></span>'}</div>
+    <div class="file-meta">${escHtml(b.base)} · model: ${escHtml(b.model)}${b.get?` · <a href="${escHtml(b.get)}" target="_blank" rel="noopener">lấy key</a>`:''}</div></div>
+    <input type="password" placeholder="Đổi API key..." data-a="keyin" style="${inp};max-width:170px">
+    <button class="action-btn" data-a="key">💾 Key</button>
+    <button class="action-btn" data-a="models">🔄 Model</button>
+    <button class="action-btn" data-a="use">✔ Dùng</button>
+    <button class="action-btn danger" data-a="del">🗑️</button></div>`).join('')
+    :'<div style="font-size:12px;color:var(--gray-400)">Chưa có bot tùy chỉnh nào.</div>';
+}
+
+$('cbAdd').onclick=async()=>{
+  const name=$('cbName').value.trim(),base=cleanBase($('cbUrl').value),key=$('cbKey').value.trim(),model=$('cbModel').value.trim();
+  if(!name||!base)return toast('Nhập tên bot và link API','error');
+  if(!/^https?:\/\//i.test(base))return toast('Link API phải bắt đầu bằng http:// hoặc https://','error');
+  const id='cb_'+name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,12)+Date.now().toString(36);
+  const b={id,name,base,model:model||'default',icon:$('cbIcon').value.trim()||'🤖',get:$('cbGet').value.trim()};
+  if(key)localStorage.setItem('tx_key_'+id,key);
+  bots.push(b);saveBots();register(b);render();
+  ['cbName','cbIcon','cbUrl','cbKey','cbModel','cbGet'].forEach(i=>$(i).value='');
+  toast('✅ Đã thêm bot '+name,'success');
+  if(key){try{await fetchModels(b);register(b);}catch(e){}}
+  selectProvider(id,cardOf(id));
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+$('cbList').addEventListener('click',async e=>{
+  const btn=e.target.closest('[data-a]');if(!btn)return;
+  const row=btn.closest('[data-id]'),b=getBot(row.dataset.id),a=btn.dataset.a;
+  if(!b||a==='keyin')return;
+  if(a==='key'){
+    const v=row.querySelector('[data-a=keyin]').value.trim();
+    if(!v)return toast('Nhập key mới','error');
+    localStorage.setItem('tx_key_'+b.id,v);toast('✅ Đã lưu key','success');render();
+  }else if(a==='use'){selectProvider(b.id,cardOf(b.id));window.scrollTo({top:0,behavior:'smooth'});}
+  else if(a==='models'){
+    if(!getKey(b.id))return toast('Nhập key trước','error');
+    try{const n=await fetchModels(b);register(b);toast(`✅ ${n} model`,'success');}
+    catch(err){toast('❌ '+err.message,'error');}
+  }else if(a==='del'){
+    if(!confirm('Xóa bot "'+b.name+'"?'))return;
+    ['tx_key_','tx_models_','tx_cm_'].forEach(p=>localStorage.removeItem(p+b.id));
+    bots=bots.filter(x=>x.id!==b.id);saveBots();delete MODELS[b.id];
+    const c=cardOf(b.id);if(c)c.remove();
+    if(currentProvider===b.id)selectProvider('claude',document.querySelectorAll('.provider-card')[0]);
+    render();toast('🗑️ Đã xóa','info');
+  }
+});
+
+bots.forEach(register);render();
+/* khôi phục bot đang chọn lần trước */
+try{
+  const o=JSON.parse(localStorage.getItem('tx_prefs')||'null');
+  if(o&&getBot(o.provider)&&cardOf(o.provider))selectProvider(o.provider,cardOf(o.provider),true);
+}catch(e){}
+})();
 init();
 </script>
 </body>
